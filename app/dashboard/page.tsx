@@ -1,7 +1,12 @@
 export default function Dashboard() {
+    
+
     return (
         <div>
-            This is the dashboard page
+            {/* Statistics Data Display */}
+            <div>
+
+            </div>
         </div>
     )
 }

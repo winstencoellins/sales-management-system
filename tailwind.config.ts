@@ -1,5 +1,5 @@
 import type { Config } from "tailwindcss";
-import { heroui, lightLayout } from "@heroui/theme";
+import { heroui } from "@heroui/theme";
 
 export default {
   content: [
@@ -8,7 +8,7 @@ export default {
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
 
     // Hero UI component
-    "./node_modules/@heroui/theme/dist/components/(pagination|form|input|button).js",
+    "./node_modules/@heroui/theme/dist/components/(pagination|form|input|alert|autocomplete).js",
   ],
   theme: {
     extend: {

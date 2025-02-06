@@ -15,7 +15,7 @@ export default function WorkOrders() {
                 <div className="mx-auto max-w-7xl px-4 py-6 flex justify-between items-center sm:px-6 lg:px-8">
                     <h1 className="text-3xl font-bold tracking-tight text-gray-900">Work Orders</h1>
 
-                    <Link href='/dashboard/work-orders/create' className='flex items-center bg-indigo-50 text-indigo-700 ring-1 ring-indigo-700/10 ring-inset px-3 py-2 rounded-md'><Image src={plus} alt={'plus'} width={12} height={12} className='mr-0.5' /> Create Work Order</Link>
+                    <Link href='/dashboard/work-orders/create' className='flex items-center bg-indigo-50 text-indigo-700 ring-1 ring-indigo-700/10 ring-inset px-3 py-2 rounded-md'><Image src={plus} alt={'plus'} width={12} height={12} className='mr-0.5' /> Add Work Order</Link>
                 </div>
             </header>
 

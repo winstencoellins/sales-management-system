@@ -14,17 +14,17 @@ datasource db {
 }
 
 model Client {
-  id            String      @id @default(uuid())
+  id            String          @id @default(uuid())
   name          String
-  address       String
+  address       String?
   telephone     String
   workOrder     WorkOrder[]
 }
 
 model User {
-  id              String      @id @default(uuid())
-  username        String      @unique
-  email           String      @unique
+  id              String        @id @default(uuid())
+  username        String        @unique
+  email           String        @unique
   firstName       String
   lastName        String
   role            Role
@@ -33,26 +33,30 @@ model User {
 }
 
 model WorkOrder {
-  id                        Int                 @id @default(autoincrement())
-  workOrderNumber           String              @unique
+  id                        Int                   @id @default(autoincrement())
+  workOrderNumber           String                @unique
   furnitureSize             String
   estimatedFinishDate       DateTime
-  createdDate               DateTime            @default(now())
-  price                     Decimal
-  status                    WorkOrderStatus     @default(NOT_STARTED)
-  clientId                  String      
-  client                    Client              @relation(fields: [clientId], references: [id])
+  createdDate               DateTime              @default(now())
+  price                     Int
+
+  status                    WorkOrderStatus       @default(NOT_STARTED)
+
+  clientId                  String
+  client                    Client                @relation(fields: [clientId], references: [id])
+
   userId                    String
-  user                      User                @relation(fields: [userId], references: [id])
+  user                      User                  @relation(fields: [userId], references: [id])
+
   invoices                  Invoices[]
 }
 
 model Invoices {
-  id                Int               @id @default(autoincrement())
-  invoiceNumber     String               @unique
-  status            InvoiceStatus     @default(UNPAID)
-  workOrder         WorkOrder         @relation(fields: [workOrderId], references: [id])
-  workOrderId       Int
+  id                  Int                 @id @default(autoincrement())
+  invoiceNumber       String              @unique
+  status              InvoiceStatus       @default(UNPAID)
+  workOrder           WorkOrder?          @relation(fields: [workOrderId], references: [id])
+  workOrderId         Int
 }
 
 enum Role {

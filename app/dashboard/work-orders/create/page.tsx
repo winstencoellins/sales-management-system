@@ -9,14 +9,18 @@ import { Autocomplete, AutocompleteItem } from "@heroui/autocomplete"
 
 import Image from "next/image"
 import Link from "next/link"
-
+import { useRouter } from "next/navigation"
 import { FormEvent, useEffect, useState } from "react"
+
 
 import leftArrow from "@/public/left-arrow.svg"
 
 export default function CreateWorkOrder() {
+    const router = useRouter()
+
     const [isLoading, setIsLoading] = useState<boolean>(false)
     const [isVisible, setIsVisible] = useState<boolean>(false)
+    const [success, setSuccess] = useState<boolean>(false)
     const [description, setDescription] = useState<string>('')
     const [title, setTitle] = useState<string>('')
     const [clients, setClients] = useState([])
@@ -25,6 +29,10 @@ export default function CreateWorkOrder() {
         getClients()
     }, [])
 
+    /**
+     * This function fetches the clients information
+     * and displays it in the client dropdown
+     */
     const getClients = async () => {
         const response = await fetch('/api/clients')
         const data = await response.json()
@@ -32,6 +40,13 @@ export default function CreateWorkOrder() {
         setClients(data)
     }
 
+    /**
+     * This function handles the submission of the form
+     * via `/api/work-orders` and redirects the user
+     * to work orders page
+     *
+     * @param event: values in the form
+     */
     const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault()
         setIsLoading(true)
@@ -48,10 +63,22 @@ export default function CreateWorkOrder() {
             }
 
             const data = await response.json()
+
+            if (data.success) {
+                setIsVisible(true)
+                setTitle('Work Order Number Created!')
+                setDescription(data.message)
+                setSuccess(true)
+
+                router.push('/dashboard/work-orders')
+            }
+
         } catch (error: any) {
             setIsVisible(true)
             setTitle('Work Order Number already exist!')
             setDescription('Please use another work order number because work order number needs to be unique.')
+            setSuccess(false)
+
             console.log(error)
         } finally {
             setIsLoading(false)
@@ -72,7 +99,7 @@ export default function CreateWorkOrder() {
 
             <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
                 <Alert
-                    color="danger"
+                    color={success ? 'success' : 'danger'}
                     description={description}
                     isVisible={isVisible}
                     title={title}
@@ -110,6 +137,8 @@ export default function CreateWorkOrder() {
                             if (value.split('x').length != 3 || value.split('x')[2] == "") {
                                 return "Please follow the format of size given in the field."
                             }
+
+
                         }}
                     />
                     <Input
@@ -119,8 +148,15 @@ export default function CreateWorkOrder() {
                         name="estimatedFinishDate"
                         type="date"
                         validate={(value) => {
-                            if (value.length < 3) {
-                                return "Username must be at least 3 characters long";
+                            const today = new Date()
+                            const selectedDate = new Date(value)
+
+                            if (value == '') {
+                                return "This field should not be empty."
+                            }
+
+                            if (selectedDate.getTime() < today.getTime()) {
+                                return "Estimated finish date can't be smaller than current date.";
                             }
                         }}
                     />
@@ -130,13 +166,11 @@ export default function CreateWorkOrder() {
                         labelPlacement="outside"
                         name="price"
                         placeholder="10000"
-                        type="text"
+                        type="number"
                         validate={(value) => {
-                        if (value.length < 3) {
-                            return "Username must be at least 3 characters long";
-                        }
-
-                        return value === "admin" ? "Nice try!" : null;
+                            if (value.length == 0) {
+                                return "This field should not be empty.";
+                            }
                         }}
                     />
                     <Autocomplete

@@ -8,8 +8,6 @@ export async function POST(req: NextRequest, res: NextResponse) {
 
     const [workOrderNumber, furnitureSize, estimatedFinishDate, price, client]:any = [formData.get('workOrderNumber'), formData.get('furnitureSize'), formData.get('estimatedFinishDate'), formData.get('price'), formData.get('client')]
 
-    console.log(estimatedFinishDate, workOrderNumber, furnitureSize, price, client)
-
     const workOrder = await prisma.workOrder.findFirst({
         where: {
             workOrderNumber: workOrderNumber
@@ -29,18 +27,16 @@ export async function POST(req: NextRequest, res: NextResponse) {
         }
     })
 
-    console.log(clientId.id)
+    // console.log(clientId.id)
 
-    const userId: any = await prisma.user.findFirst({
-        where: {
-            id: 'ccd9a3d4-d7a5-4398-a74d-d8e9e34165eb'
-        },
-        select: {
-            id: true
-        }
-    })
-
-    console.log(userId.id)
+    // const userId: any = await prisma.user.findFirst({
+    //     where: {
+    //         id: 'ccd9a3d4-d7a5-4398-a74d-d8e9e34165eb'
+    //     },
+    //     select: {
+    //         id: true
+    //     }
+    // })
 
     const createWorkOrder = await prisma.workOrder.create({
         data: {
@@ -53,5 +49,5 @@ export async function POST(req: NextRequest, res: NextResponse) {
         }
     })
 
-    return NextResponse.json({ message: 'Work Order created successfully.' }, { status: 201 })
+    return NextResponse.json({ success: true, message: `Work Order #${workOrderNumber} created successfully.` }, { status: 201 })
 }

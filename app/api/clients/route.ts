@@ -6,7 +6,10 @@ import { NextResponse, NextRequest } from "next/server";
 export async function GET(req: NextRequest, res: NextResponse) {
     const client = await prisma.client.findMany({
         select: {
-            name: true
+            id: true,
+            name: true,
+            address: true,
+            telephone: true,
         }
     })
 
@@ -26,7 +29,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
         }
     })
 
-    return NextResponse.json({  }, { status: 201 })
+    return NextResponse.json({ success: true, message: `Client ${name} created successfully` }, { status: 201 })
 }
 
 export async function PUT(req: NextRequest, res: NextResponse) {

@@ -3,6 +3,29 @@
 import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 
+
+export async function GET(req: NextRequest, res: NextResponse) {
+    const workOrders = await prisma.workOrder.findMany({
+        select: {
+            workOrderNumber: true,
+            furnitureSize: true,
+            estimatedFinishDate: true,
+            price: true,
+            status: true,
+            client: {
+                select: {
+                    name: true
+                }
+            }
+        },
+        orderBy: {
+            estimatedFinishDate: 'asc'
+        }
+    })
+
+    return NextResponse.json(workOrders, { status: 200 })
+}
+
 export async function POST(req: NextRequest, res: NextResponse) {
     const formData = await req.formData()
 

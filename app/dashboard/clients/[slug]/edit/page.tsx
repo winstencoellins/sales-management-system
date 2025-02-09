@@ -10,34 +10,45 @@ import Link from "next/link"
 
 import leftArrow from '@/public/left-arrow.svg'
 
-import { FormEvent, useState } from "react"
-import { useRouter } from "next/navigation"
+import { FormEvent, useEffect, useState } from "react"
+import { useRouter, usePathname } from "next/navigation"
 
-export default function CreateClient() {
-    const router = useRouter()
+export default function EditClient() {
+    const path = usePathname()
 
+    console.log(path)
+    
     const [isLoading, setIsLoading] = useState<boolean>(false)
 
-    const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
-        event.preventDefault()
+    const [clientName, setClientName] = useState<string>('')
+    const [address, setAddress] = useState<string>('')
+    const [tel, setTel] = useState<string>('')
 
-        try {
-            const formData = new FormData(event.currentTarget)
+    useEffect(() => {
+        getClientDetail()
+    }, [])
 
-            const response = await fetch('/api/clients', {
-                method: "POST",
-                body: formData
-            })
+    const onSubmit = async () => {
 
-            const data = await response.json()
+    }
 
-            if (data.success) {
-                router.push('/dashboard/clients')
-            }
-        } catch(error) {
-            console.log(error)
-        } finally {
-            setIsLoading(false)
+    const getClientDetail = async () => {
+        console.log(path.split('/'))
+
+        const response = await fetch(`/api/clients/${path.split('/')[3]}`, {
+            method: "GET",
+        })
+
+        if (!response.ok) {
+            throw new Error('Failed to connect to database. Please try again')
+        }
+
+        const data = await response.json()
+
+        if (data.success) {
+            setClientName(data.client.name)
+            setAddress(data.client.address)
+            setTel(data.client.telephone)
         }
     }
 
@@ -62,6 +73,8 @@ export default function CreateClient() {
                         placeholder="Apple Inc."
                         name="clientName"
                         className="lg:my-1"
+                        value={clientName}
+                        onValueChange={(value: string) => setClientName(value)}
                         // validate={(value) => {
                         //     if (value.length < 3) {
                         //         return "Username must be at least 3 characters long";
@@ -74,6 +87,8 @@ export default function CreateClient() {
                         placeholder="Mississippi St"
                         name="address"
                         className="lg:my-1"
+                        value={address}
+                        onValueChange={(value: string) => setAddress(value)}
                         // validate={(value) => {
                         //     if (value.length < 3) {
                         //         return "Username must be at least 3 characters long";
@@ -86,6 +101,8 @@ export default function CreateClient() {
                         placeholder="081123456789"
                         name="tel"
                         className="lg:my-1"
+                        value={tel}
+                        onValueChange={(value: string) => setTel(value)}
                         // validate={(value) => {
                         //     if (value.length < 3) {
                         //         return "Username must be at least 3 characters long";
@@ -95,7 +112,7 @@ export default function CreateClient() {
 
                     <div className="lg:flex lg:justify-end lg:w-full">
                         <button type="submit" disabled={isLoading} className="text-indigo-700 bg-indigo-50 px-5 py-2 mt-5 rounded-lg ring-1 ring-indigo-700/10 ring-inset">
-                            {isLoading ? 'Loading ...' : 'Create'}
+                            {isLoading ? 'Loading ...' : 'Edit'}
                         </button>
                     </div>
                 </Form>

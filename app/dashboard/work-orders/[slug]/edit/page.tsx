@@ -15,75 +15,16 @@ import { FormEvent, useEffect, useState } from "react"
 
 import leftArrow from "@/public/left-arrow.svg"
 
-export default function CreateWorkOrder() {
-    const router = useRouter()
-
+export default function EditWorkOrder() {
     const [isLoading, setIsLoading] = useState<boolean>(false)
-    const [isVisible, setIsVisible] = useState<boolean>(false)
-    const [success, setSuccess] = useState<boolean>(false)
-    const [description, setDescription] = useState<string>('')
-    const [title, setTitle] = useState<string>('')
-    const [clients, setClients] = useState([])
 
-    useEffect(() => {
-        getClients()
-    }, [])
+    const [workOrderNumber, setWorkOrderNumber] = useState<string>('ASDF')
 
-    /**
-     * This function fetches the clients information
-     * and displays it in the client dropdown
-     */
-    const getClients = async () => {
-        const response = await fetch('/api/clients')
-        const data = await response.json()
+    const onSubmit = async () => {
 
-        setClients(data)
     }
 
-    /**
-     * This function handles the submission of the form
-     * via `/api/work-orders` and redirects the user
-     * to work orders page
-     *
-     * @param event: values in the form
-     */
-    const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
-        event.preventDefault()
-        setIsLoading(true)
-
-        try {
-            const formData = new FormData(event.currentTarget)
-            const response = await fetch('/api/work-orders', {
-                method: "POST",
-                body: formData
-            })
-
-            if (!response.ok) {
-                throw new Error('Failed to submit the data. Please try again.')
-            }
-
-            const data = await response.json()
-
-            if (data.success) {
-                setIsVisible(true)
-                setTitle('Work Order Number Created!')
-                setDescription(data.message)
-                setSuccess(true)
-
-                router.push('/dashboard/work-orders')
-            }
-
-        } catch (error: any) {
-            setIsVisible(true)
-            setTitle('Work Order Number already exist!')
-            setDescription('Please use another work order number because work order number needs to be unique.')
-            setSuccess(false)
-
-            console.log(error)
-        } finally {
-            setIsLoading(false)
-        }
-    }
+    
 
     return (
         <>
@@ -98,7 +39,7 @@ export default function CreateWorkOrder() {
 
 
             <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-                <Alert
+                {/* <Alert
                     color={success ? 'success' : 'danger'}
                     description={description}
                     isVisible={isVisible}
@@ -106,7 +47,7 @@ export default function CreateWorkOrder() {
                     variant="faded"
                     onClose={() => setIsVisible(false)}
                     className="mb-5"
-                />
+                /> */}
 
                 <Form validationBehavior="native" onSubmit={onSubmit} className="mt-5 mb-[200px]">
                     <div className="lg:grid lg:grid-cols-2 lg:w-full lg:gap-x-5 lg:my-1">
@@ -122,6 +63,8 @@ export default function CreateWorkOrder() {
                                     return "This field should not be empty.";
                                 }
                             }}
+                            value={workOrderNumber}
+                            onValueChange={(value: string) => setWorkOrderNumber(value)}
                         />
                         <Input
                             isRequired
@@ -201,7 +144,7 @@ export default function CreateWorkOrder() {
                         variant={"flat"}
                         name="notes"
                     />
-                    <Autocomplete
+                    {/* <Autocomplete
                         isRequired
                         label="Client"
                         placeholder="Select a client"
@@ -214,7 +157,7 @@ export default function CreateWorkOrder() {
                                 <AutocompleteItem key={client.name}>{client.name}</AutocompleteItem>
                             ))
                         }
-                    </Autocomplete>
+                    </Autocomplete> */}
 
                     <div className="lg:flex lg:justify-end lg:w-full">
                         <button type="submit" disabled={isLoading} className="text-indigo-700 bg-indigo-50 px-5 py-2 mt-5 rounded-lg ring-1 ring-indigo-700/10 ring-inset">

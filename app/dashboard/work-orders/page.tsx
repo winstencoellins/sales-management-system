@@ -173,7 +173,7 @@ export default function WorkOrders() {
                                             <td className='py-4 pl-2'>{workOrder.status == 'NOT_STARTED' ? 'Not Started' : capitalize(workOrder.status)}</td>
                                             <td className='py-4 pl-2'>{workOrder.client.name}</td>
                                             <td className='py-4 pl-2'>
-                                                <button className='text-indigo-700 hover:underline'>View Detail</button>
+                                                <Link href={`/dashboard/work-orders/${workOrder.workOrderNumber}`} className='text-indigo-700 hover:underline'>View Detail</Link>
                                             </td>
                                         </tr>
                                     ))

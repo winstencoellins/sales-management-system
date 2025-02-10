@@ -33,9 +33,48 @@ export async function POST(req: NextRequest, res: NextResponse) {
 }
 
 export async function PUT(req: NextRequest, res: NextResponse) {
+    const formData = await req.formData()
 
+    const [id, name, address, telephone]:any = [formData.get('id'), formData.get('clientName'), formData.get('address'), formData.get('tel')]
+
+    console.log(name, address, telephone)
+
+    const updateClient = await prisma.client.update({
+        where: {
+            id: id
+        },
+        data: {
+            name: name,
+            address: address,
+            telephone: telephone
+        }
+    })
+
+    // console.log(updateClient)
+
+    return NextResponse.json({success: true, message: `Client ${name} updated successfully`})
 }
 
-export async function DELETE(req: NextRequest, res: NextResponse) {
+// export async function DELETE(req: NextRequest, res: NextResponse) {
+//     const formData = await req.formData()
 
-}
+//     const [id, clientName]:any = [formData.get('id'), formData.get('clientName')]
+
+//     console.log(id, clientName)
+
+//     // if the client is still connected to a work order
+//     if () {
+//         return NextResponse.json({status: 409, message: `Client ${clientName} is still connected to work order.`})
+//     }
+
+//     // INTERNAL SERVER ERROR WOEEE :'D
+//     const deleteClient = await prisma.client.delete({
+//         where: {
+//             id: id
+//         }
+//     })
+
+//     console.log(deleteClient)
+
+//     return NextResponse.json({ success: true, message: `Client ${clientName} deleted successfully.`})
+// }

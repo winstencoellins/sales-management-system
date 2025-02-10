@@ -50,7 +50,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
         }
     })
 
-    // console.log(clientId.id)
+    console.log(clientId.id)
 
     // const userId: any = await prisma.user.findFirst({
     //     where: {
@@ -73,4 +73,35 @@ export async function POST(req: NextRequest, res: NextResponse) {
     })
 
     return NextResponse.json({ success: true, message: `Work Order #${workOrderNumber} created successfully.` }, { status: 201 })
+}
+
+export async function PUT(req: NextRequest, res: NextResponse) {
+    const formData = await req.formData()
+
+    const [workOrderNumber, furnitureSize, estimatedFinishDate, price, status, clientId]:any = [formData.get('workOrderNumber'), formData.get('furnitureSize'), formData.get('estimatedFinishDate'), formData.get('price'), formData.get('status'), formData.get('clientId')]
+
+    console.log(workOrderNumber, furnitureSize, estimatedFinishDate, price, status, clientId)
+
+    const updateWorkOrder = await prisma.workOrder.update({
+        where: {
+            workOrderNumber: workOrderNumber
+        },
+        data: {
+            furnitureSize: furnitureSize,
+            estimatedFinishDate: estimatedFinishDate + 'T00:00:00.000Z',
+            price: parseInt(price),
+            status: status,
+            clientId: clientId.id // BINGUNG WOEOSKLDLFJLKASDJFLKASJLDFK
+        }
+    })
+
+    console.log(updateWorkOrder)
+
+    return NextResponse.json({ success: true, message: `Work Order #${workOrderNumber} updated successfully`})
+}
+
+export async function DELETE(req: NextRequest, res: NextResponse){
+    const formData = await req.formData()
+
+    const workOrderNumber:any = formData.get('workOrderNumber')
 }

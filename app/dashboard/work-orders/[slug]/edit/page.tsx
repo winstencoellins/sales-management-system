@@ -30,7 +30,7 @@ export default function EditWorkOrder() {
         <>
             <header className="bg-white shadow-sm">
                 <div className="mx-auto max-w-7xl px-4 py-6 flex justify-between items-center sm:px-6 lg:px-8">
-                    <h1 className="text-3xl font-bold tracking-tight text-gray-900">Create Work Order</h1>
+                    <h1 className="text-3xl font-bold tracking-tight text-gray-900">Edit Work Order #XXX</h1>
 
                     <Link href='/dashboard/work-orders' className='flex items-center bg-indigo-50 text-indigo-700 ring-1 ring-indigo-700/10 ring-inset px-3 py-2 rounded-md'><Image src={leftArrow} alt={'plus'} width={20} height={20} className='mr-2' /> Back to Work Order</Link>
                 </div>
@@ -161,7 +161,7 @@ export default function EditWorkOrder() {
 
                     <div className="lg:flex lg:justify-end lg:w-full">
                         <button type="submit" disabled={isLoading} className="text-indigo-700 bg-indigo-50 px-5 py-2 mt-5 rounded-lg ring-1 ring-indigo-700/10 ring-inset">
-                            {isLoading ? 'Loading ...' : 'Create'}
+                            {isLoading ? 'Loading ...' : 'Edit'}
                         </button>
                     </div>
                 </Form>

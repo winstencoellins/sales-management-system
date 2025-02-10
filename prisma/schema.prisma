@@ -43,7 +43,7 @@ model WorkOrder {
   status                    WorkOrderStatus       @default(NOT_STARTED)
 
   clientId                  String
-  client                    Client                @relation(fields: [clientId], references: [id])
+  client                    Client                @relation(fields: [clientId], references: [id], onUpdate: Cascade, onDelete: Cascade)
 
   userId                    String?
   user                      User?                 @relation(fields: [userId], references: [id])

@@ -53,6 +53,7 @@ export default function CreateWorkOrder() {
 
         try {
             const formData = new FormData(event.currentTarget)
+
             const response = await fetch('/api/work-orders', {
                 method: "POST",
                 body: formData

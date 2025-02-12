@@ -3,6 +3,7 @@
 'use client'
 
 import { useEffect, useState } from "react"
+import { clsx } from "clsx"
 
 import { Pagination } from "@heroui/pagination"
 
@@ -57,7 +58,7 @@ export default function Clients() {
             <header className="bg-white shadow-sm">
                 <div className="mx-auto max-w-7xl px-4 py-6 flex justify-between items-center sm:px-6 lg:px-8">
                     <h1 className="text-3xl font-bold tracking-tight text-gray-900">Clients</h1>
-                    
+
                     <Link href='/dashboard/clients/create' className='flex items-center bg-indigo-50 text-indigo-700 ring-1 ring-indigo-700/10 ring-inset px-3 py-2 rounded-md'><Image src={plus} alt={'plus'} width={12} height={12} className='mr-0.5' /> Add Client</Link>
                 </div>
 
@@ -82,6 +83,7 @@ export default function Clients() {
                                 <th className='py-4 pl-2'>Name</th>
                                 <th className='py-4 pl-2'>Address</th>
                                 <th className='py-4 pl-2'>Telephone No.</th>
+                                <th className='py-4 pl-2'>Status</th>
                                 <th className='py-4 pl-2'></th>
                             </tr>
                         </thead>
@@ -92,6 +94,7 @@ export default function Clients() {
                                         <td className='py-5 pl-2 font-semibold'>{client.name}</td>
                                         <td className='py-5 pl-2 text-slate-500'>{client.address}</td>
                                         <td className='py-5 pl-2 text-slate-500'>{client.telephone}</td>
+                                        <td className='py-5 pl-2 text-slate-500'><p className={client.status == 'INACTIVE' ? 'bg-red-50 text-red-700 px-3 py-1 w-fit rounded-full border border-red-700' : 'bg-green-50 text-green-700 py-1 px-3 w-fit rounded-full border border-green-700'}>{client.status == 'INACTIVE' ? 'Inactive' : 'Active'}</p></td>
                                         <td className='py-5 pl-2'><Link href={`/dashboard/clients/${client.id}/edit`} className="text-indigo-700 hover:underline">Edit Details</Link></td>
                                     </tr>
                                 ))

@@ -18,6 +18,9 @@ model Client {
   name          String
   address       String?
   telephone     String
+
+  status        ClientStatus    @default(ACTIVE)
+
   workOrder     WorkOrder[]
 }
 
@@ -39,14 +42,19 @@ model WorkOrder {
   estimatedFinishDate       DateTime
   createdDate               DateTime              @default(now())
   price                     Int
+  worker                    String
+  quantity                  Int
+  productDescription        String
+
+  notes                     String?
 
   status                    WorkOrderStatus       @default(NOT_STARTED)
 
   clientId                  String
-  client                    Client                @relation(fields: [clientId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  client                    Client                @relation(fields: [clientId], references: [id], onUpdate: Cascade, onDelete: NoAction)
 
   userId                    String?
-  user                      User?                 @relation(fields: [userId], references: [id])
+  user                      User?                 @relation(fields: [userId], references: [id], onUpdate: Cascade, onDelete: NoAction)
 
   invoices                  Invoices[]
 }
@@ -74,4 +82,9 @@ enum WorkOrderStatus {
   ONGOING
   COMPLETED
   CANCELLED
+}
+
+enum ClientStatus {
+  INACTIVE
+  ACTIVE
 }

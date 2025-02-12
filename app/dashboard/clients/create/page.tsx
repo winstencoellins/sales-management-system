@@ -62,11 +62,11 @@ export default function CreateClient() {
                         placeholder="Apple Inc."
                         name="clientName"
                         className="lg:my-1"
-                        // validate={(value) => {
-                        //     if (value.length < 3) {
-                        //         return "Username must be at least 3 characters long";
-                        //     }
-                        // }}
+                        validate={(value) => {
+                            if (value.length == 0) {
+                                return "This field should not be empty.";
+                            }
+                        }}
                     />
                     <Input
                         label="Address"
@@ -74,11 +74,6 @@ export default function CreateClient() {
                         placeholder="Mississippi St"
                         name="address"
                         className="lg:my-1"
-                        // validate={(value) => {
-                        //     if (value.length < 3) {
-                        //         return "Username must be at least 3 characters long";
-                        //     }
-                        // }}
                     />
                     <Input
                         label="Telephone Number"
@@ -86,11 +81,11 @@ export default function CreateClient() {
                         placeholder="081123456789"
                         name="tel"
                         className="lg:my-1"
-                        // validate={(value) => {
-                        //     if (value.length < 3) {
-                        //         return "Username must be at least 3 characters long";
-                        //     }
-                        // }}
+                        validate={(value) => {
+                            if (value.length == 0) {
+                                return "This field should not be empty.";
+                            }
+                        }}
                     />
 
                     <div className="lg:flex lg:justify-end lg:w-full">

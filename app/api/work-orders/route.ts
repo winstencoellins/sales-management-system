@@ -29,7 +29,9 @@ export async function GET(req: NextRequest, res: NextResponse) {
 export async function POST(req: NextRequest, res: NextResponse) {
     const formData = await req.formData()
 
-    const [workOrderNumber, furnitureSize, estimatedFinishDate, price, client]:any = [formData.get('workOrderNumber'), formData.get('furnitureSize'), formData.get('estimatedFinishDate'), formData.get('price'), formData.get('client')]
+    const [workOrderNumber, furnitureSize, estimatedFinishDate, price, client, qty, worker, productDescription, notes]:any = [formData.get('workOrderNumber'), formData.get('furnitureSize'), formData.get('estimatedFinishDate'), formData.get('price'), formData.get('client'), formData.get('worker'), formData.get('qty'), formData.get('productDescription'), formData.get('notes')]
+
+    console.log(qty, worker, productDescription, notes)
 
     const workOrder = await prisma.workOrder.findFirst({
         where: {
@@ -68,6 +70,10 @@ export async function POST(req: NextRequest, res: NextResponse) {
             estimatedFinishDate: estimatedFinishDate + 'T00:00:00.000Z',
             price: parseInt(price),
             clientId: clientId.id,
+            worker: worker,
+            productDescription: productDescription,
+            notes: notes,
+            quantity: parseInt(qty)
             // userId: userId.id,
         }
     })

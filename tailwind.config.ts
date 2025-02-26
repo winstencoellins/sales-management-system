@@ -8,7 +8,7 @@ export default {
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
 
     // Hero UI component
-    "./node_modules/@heroui/theme/dist/components/(pagination|form|input|alert|autocomplete).js",
+    "./node_modules/@heroui/theme/dist/components/(pagination|form|input|alert|autocomplete|date-input).js",
   ],
   theme: {
     extend: {

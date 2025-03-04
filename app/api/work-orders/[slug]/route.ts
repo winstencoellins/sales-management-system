@@ -2,14 +2,16 @@ import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest, res: NextResponse) {
-    const workOrderNumber = req.url.split('/')[5]
+    const workOrderId = req.url.split('/')[5]
 
-    const workOrderDetail = await prisma.workOrder.findFirst({
+    console.log(workOrderId)
+
+    const workOrderDetail = await prisma.workOrder.findUnique({
         omit: {
             id: true,
         },
         where: {
-            workOrderNumber: workOrderNumber
+            id: parseInt(workOrderId)
         },
         include: {
             client: {
@@ -23,6 +25,8 @@ export async function GET(req: NextRequest, res: NextResponse) {
     if (!workOrderDetail) {
         return NextResponse.json({ success: true, message: 'Work Order doesn\'t exist' }, { status: 404 })
     }
+
+    console.log(workOrderDetail)
 
     return NextResponse.json(workOrderDetail, { status: 200 })
 }

@@ -98,7 +98,7 @@ export default function Clients() {
                                                     {client.status.charAt(0).toUpperCase() + client.status.slice(1).toLowerCase()}
                                                 </p>
                                             </td>
-                                            <td className="font-normal text-slate-400 py-4 pl-2"><Link href={`/dashboard/clients/${client.id}/edit`} className="text-yellow-500 flex items-center"><Image src={pencil} alt="icon" width={16} height={16} className="mr-1" />Edit Details</Link></td>
+                                            <td className="font-normal text-slate-400 py-4 pl-2"><Link href={`/dashboard/clients/${client.id}/edit`} className="text-indigo-700 flex items-center"><Image src={pencil} alt="icon" width={16} height={16} className="mr-1" />Edit Details</Link></td>
                                         </tr>
                                     ))
                                 }

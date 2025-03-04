@@ -11,21 +11,25 @@ import { usePathname } from "next/navigation"
 import { useEffect, useState } from "react"
 
 import { Form } from "@heroui/form"
-import { Input } from "@heroui/input"
+import { Input, Textarea } from "@heroui/input"
 
 export default function WorkOrdersDetail({ params }: { params: Promise<{ slug: string }>}) {
     const path = usePathname()
 
-    const [workOrderNumber, setWorkOrderNumber] = useState<string>('')
+    const [order, setOrder] = useState<string>('')
+    const [month, setMonth] = useState<string>('')
+    const [year, setYear] = useState<string>('')
     const [isVisible, setIsVisible] = useState<boolean>(false)
     const [status, setStatus] = useState<string>('')
     const [worker, setWorker] = useState<string>('')
     const [clientName, setClientName] = useState<string>('')
-    const [price, setPrice] = useState<number>(0)
+    const [price, setPrice] = useState<string>('')
     const [tel, setTel] = useState<string>('')
     const [address, setAddress] = useState<string>('')
     const [notes, setNotes] = useState<string>('')
-    const [productDescription, setProductDescription] = useState<string>('') 
+    const [itemDescription, setItemDescription] = useState<string>('')
+    const [finishDate, setFinishDate] = useState<string>('')
+    const [qty, setQty] = useState<string>('')
 
     useEffect(() => {
         getWorkOrderDetail()
@@ -43,19 +47,21 @@ export default function WorkOrdersDetail({ params }: { params: Promise<{ slug: s
 
             const data = await response.json()
 
-            console.log(data)
+            const [o, m, y] = data.workOrderNumber.split('/')
 
-            
-            setWorkOrderNumber(workOrderNumber)
-            setStatus(data.status)
             setClientName(data.client.name)
+            setFinishDate(data.estimatedFinishDate.split('T')[0])
+            setStatus(data.status)
+            setItemDescription(data.itemDescription)
+            setNotes(data.notes)
+            setPrice(data.price)
+            setQty(data.quantity)
             setTel(data.client.telephone)
             setAddress(data.client.address)
-            setPrice(data.price)
-            // setNotes(data.notes)
-            // setWorker(data.worker) 
-            // setProductDescription(data.productDescription)
-            
+            setWorker(data.worker)
+            setOrder(o)
+            setMonth(m)
+            setYear(y)
         } catch(error) {
             console.log(error)
         }
@@ -79,103 +85,138 @@ export default function WorkOrdersDetail({ params }: { params: Promise<{ slug: s
                 </div>
 
             </header>
-            
+
             <main className='mb-[100px]'>
-                <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-                    <div className="lg:flex lg:w-full lg:justify-between lg:mb-10">
-                        <div>
-                            <Link href={`/dashboard/work-orders/${path.split('/')[3]}/edit`} className="text-indigo-700 bg-indigo-50 px-5 py-2 rounded-lg ring-1 ring-indigo-700/10 ring-inset">Edit Work Order</Link>
-                            <button className="text-red-700 bg-red-50 px-5 py-2 rounded-lg ring-1 ring-red-700/10 ring-inset ml-5">Delete Work Order</button>
+                <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 lg:mb-10 flex flex-row">
+                    {/* Work Order Form */}
+                    <Form validationBehavior="native" className="bg-white p-5 rounded-lg shadow-lg w-10/12 mr-5">
+                        {/* Work Order */}
+                        <div className="w-full">
+                            {/* Header */}
+                            <div className="flex justify-between">
+                                <div className="">
+                                    <h1>LOGO</h1>
+                                    <p className="text-sm text-slate-400">
+                                        Jln. K L Yos Sudarso No. 153 AB <br />
+                                        Medan, 20238, Sumatera Utara <br />
+                                        +62 81 - 111 - 1111
+                                    </p>
+                                </div>
+
+                                <table className="text-slate-400 text-sm">
+                                    <tbody>
+                                        <tr className="">
+                                            <td className="pr-2 text-right py-2">No. SPK: </td>
+                                            <td className="flex items-center py-2">
+                                                <Input type="number" disabled name='order' className="w-[75px]" value={order} />
+                                                <p className="mx-2">/</p>
+                                                <Input type="number" disabled name='month' className="w-[75px]" value={month} />
+                                                <p className="mx-2">/</p>
+                                                <Input type="number" disabled name='year' className="w-[75px]" value={year} />
+                                            </td>
+                                        </tr>
+                                        <tr className="">
+                                            <td className="pr-2 text-right py-2">Pekerja: </td>
+                                            <td className="py-2">
+                                                <Input type="text" name='worker' disabled value={worker} />
+                                            </td>
+                                        </tr>
+                                        <tr className="">
+                                            <td className="pr-2 text-right w-full py-2">Tanggal Selesai: </td>
+                                            <td className="py-2">
+                                                <Input type="date" disabled name='date' value={finishDate} />
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <hr className="mt-5" />
+
+                            <div className="flex mt-5 justify-between">
+                                <div className="w-1/2">
+                                    <Textarea name="notes" value={notes} label="Catatan:" labelPlacement="outside" className="text-slate-400" />
+                                </div>
+
+                                <div className="text-slate-400">
+                                    <h1 className="text-sm">Informasi Klien:</h1>
+
+                                    <table className="text-sm mt-2">
+                                        <tbody>
+                                            <tr>
+                                                <td className="py-2 text-right px-2">Nama Klien: </td>
+                                                <td className="py-2">
+                                                    <Input type="text" disabled value={clientName} />
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td className="py-2 text-right px-2">Alamat: </td>
+                                                <td className="py-2">
+                                                    <Input type="text" value={address} disabled className="hover:cursor-not-allowed" />
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td className="py-2 text-right px-2">No. Telepon: </td>
+                                                <td className="py-2">
+                                                    <Input type="text" value={tel} disabled className="hover:cursor-not-allowed" />
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <hr className="my-5"/>
+
+                            <table className="w-full text-left text-slate-400">
+                                <thead>
+                                    <tr className="bg-slate-50">
+                                        <th className="py-3 px-3">Deskripsi Item</th>
+                                        <th className="py-3 px-3">Qty</th>
+                                        <th className="py-3 px-3">Harga Satuan</th>
+                                        {/* <th className="py-3 px-3"></th> */}
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td className="py-4 px-2">
+                                            <Input type="text" disabled name='itemDescription' value={itemDescription} />
+                                        </td>
+                                        <td className="py-4 px-2">
+                                            <Input type="text" disabled name='quantity' value={qty} />
+                                        </td>
+                                        <td className="py-4 px-2">
+                                            <Input type="text" disabled name="price" value={price.toLocaleString()} />
+                                        </td>
+                                        {/* <td className="py-4 px-2 text-center">
+                                            <button className="bg-red-50 ring-1 ring-red-700/10 ring-inset px-2 py-2 rounded-md">
+                                                <Image src={trash} alt='icon' width={20} height={20} />
+                                            </button>
+                                        </td> */}
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <hr className="my-5" />
+
+                            <div className="w-full flex justify-end text-slate-400">
+                                <table>
+                                    <tbody>
+                                        <tr>
+                                            <td className="px-5">Total Harga: </td>
+                                            <td>Rp. {(parseInt(qty) * parseInt(price)).toLocaleString()}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
+                    </Form>
 
-                        <div>
-                            {
-                                status == 'COMPLETED' ?
-                                <button onClick={() => {isVisible ? setIsVisible(false) : setIsVisible(true)}} className="text-indigo-50 bg-indigo-700 px-5 py-2 rounded-lg ring-1 ring-indigo-700/10 ring-inset ml-5">{isVisible ? 'Cancel' : 'Generate Invoice'}</button>
-                                : 
-                                <button className="text-indigo-50 bg-indigo-700 px-5 py-2 rounded-lg ring-1 ring-indigo-700/10 ring-inset ml-5">Print Work Order</button>
-                            }
-                        </div>
-
-                    </div>
-                    
-                    <div className={isVisible ? 'lg:block' : 'lg:hidden'}>
-                        <Form validationBehavior="native" onSubmit={onSubmit}>
-                            <Input
-                                isRequired
-                                label="Invoice Number"
-                                labelPlacement="outside"
-                                placeholder="UXIE001"
-                                name="invoiceNumber"
-                                className="lg:my-1"
-                                // validate={(value) => {
-                                //     if (value.length < 3) {
-                                //         return "Username must be at least 3 characters long";
-                                //     }
-                                // }}
-                            />
-
-                            <button type='submit' className='flex items-center bg-indigo-50 text-indigo-700 ring-1 ring-indigo-700/10 ring-inset px-3 py-2 rounded-md'>Create Invoice</button>
-                        </Form>
-                    </div>
-
-                    <div className="lg:flex lg:justify-between lg:items-start lg:border-b pb-4">
-                        <div>
-                            <h3 className="text-xl font-semibold">Queen 69</h3>
-                            <p>+62 123401923</p>
-                        </div>
-
-                        <p className={status == 'NOT_STARTED' ? 'text-slate-700 bg-slate-50 px-5 py-1 rounded-full ring-1 ring-slate-700/10 ring-inset ml-5' : status == 'ONGOING' ? 'text-orange-700 bg-orange-50 px-5 py-1 rounded-full ring-1 ring-orange-700/10 ring-inset ml-5' : status == 'COMPLETED' ? 'text-green-700 bg-green-50 px-5 py-1 rounded-full ring-1 ring-green-700/10 ring-inset ml-5' : 'text-red-700 bg-red-50 px-5 py-1 rounded-full ring-1 ring-red-700/10 ring-inset ml-5'}>{status == 'NOT_STARTED' ? 'Not Started' : capitalize(status)}</p>
-                    </div>
-
-                    <h1 className="lg:mt-5 lg:mb-1 lg:text-2xl lg:font-semibold text-indigo-700">SURAT PERINTAH KERJA #{workOrderNumber}</h1>
-
-                    <p className="mb-5">Pekerja: <span className="font-semibold">Winsten</span></p>
-
-                    <div className="mb-10">
-                        <h4 className="text-lg font-semibold">Informasi Klien:</h4>
-                        <div className="lg:grid lg:grid-cols-2">
-                            <p>Nama: <span className="font-semibold">{clientName}</span></p>
-                            <p>Alamat: <span className="font-semibold">{address}</span></p>
-                            <p>No. Telepon: <span className="font-semibold">{tel}</span></p>
-                        </div>
-                    </div>
-
-                    <table className="table-auto w-full">
-                        <thead className='text-left border-b'>
-                            <tr className='bg-indigo-50 text-indigo-700'>
-                                <th className='py-4 pl-2'>Deskripsi Produk</th>
-                                <th className='py-4 pl-2'>Jumlah</th>
-                                <th className='py-4 pl-2'>Harga Satuan</th>
-                                <th className='py-4 pl-2'>Total</th>
-                            </tr>
-                        </thead>
-                        <tbody className='text-left'>
-                            <tr className='border-b'>
-                                <td className='py-5 pl-2 font-semibold'>Lemari 1000 Pintu</td>
-                                <td className='py-5 pl-2 text-slate-500'>1</td>
-                                <td className='py-5 pl-2 text-slate-500'>Rp. 10000000</td>
-                                <td className='py-5 pl-2'>Rp. 10000000</td>
-                            </tr>
-
-                            <tr>
-                                <td></td>
-                                <td></td>
-                                <td className="py-5 pl-2">Total Harga: </td>
-                                <td className="py-5 pl-2">Rp. 10000000</td>
-                            </tr>
-                        </tbody>
-                    </table>
-
-                    <div className="lg:mt-20 lg:flex lg:justify-between">
-                        <div className="lg:w-1/2">
-                            <p>Catatan:</p>
-                            <p className="lg:border lg:h-20 lg:mt-2 px-1 py-1">asdfasfasdfasdfasdfasdasdfasdf<br />asdf</p>
-                        </div>
-
-                        <div className="lg:w-1/4">
-                            <p>Tanda Tangan</p>
-                            <p className="lg:border-b lg:h-20 lg:mt-2"></p>
+                    <div className="bg-white w-2/12 flex flex-col shadow-xl h-fit p-3">
+                        <button className="mb-5 bg-indigo-700 text-white px-1 py-2 rounded-md">Generate Work Order</button>
+                        <button className="mb-5 bg-indigo-700 text-white px-1 py-2 rounded-md">Create Invoice</button>
+                        <div className="text-center">
+                            <Link href={`/dashboard/work-order/${path.split('/')[3]}/edit`}>Edit Work Order</Link>
                         </div>
                     </div>
                 </div>

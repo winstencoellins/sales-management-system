@@ -116,7 +116,7 @@ export default function WorkOrders() {
                             </thead>
                             <tbody className='text-left'>
                                 {
-                                    arr.length == 0 
+                                    arr.length == 0
                                     ?
                                     <tr><td className='text-slate-500 py-5'>No work order ...</td></tr>
                                     :
@@ -133,7 +133,7 @@ export default function WorkOrders() {
                                             </td>
                                             <td className='py-4 pl-2'>{workOrder.worker}</td>
                                             <td className='py-4 pl-2'>
-                                                <button className='text-indigo-700 hover:underline'>View Detail</button>
+                                                <Link href={`/dashboard/work-orders/${workOrder.id}`}>View Detail</Link>
                                             </td>
                                         </tr>
                                     ))

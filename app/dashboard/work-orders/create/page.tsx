@@ -46,7 +46,7 @@ export default function CreateWorkOrder() {
     /**
      * This function handles the address and telephone
      * input if the dropdown form changes
-     * 
+     *
      * @param event
      */
     const handleChange = (event: any) => {
@@ -129,7 +129,7 @@ export default function CreateWorkOrder() {
                                 <h1>LOGO</h1>
                                 <p className="text-sm text-slate-400">
                                     Jln. K L Yos Sudarso No. 153 AB <br />
-                                    Medan, 20238, Sumatera Utara <br /> 
+                                    Medan, 20238, Sumatera Utara <br />
                                     +62 81 - 111 - 1111
                                 </p>
                             </div>
@@ -230,7 +230,7 @@ export default function CreateWorkOrder() {
                                 <tr className="bg-slate-50">
                                     <th className="py-3 px-3">Deskripsi Item</th>
                                     <th className="py-3 px-3">Qty</th>
-                                    <th className="py-3 px-3">Harga</th>
+                                    <th className="py-3 px-3">Harga Satuan</th>
                                     {/* <th className="py-3 px-3"></th> */}
                                 </tr>
                             </thead>
@@ -240,21 +240,21 @@ export default function CreateWorkOrder() {
                                         <Input type="text" name='itemDescription' placeholder="Lemari 3 pintu" validate={(value) => {
                                             if (value.length == 0) {
                                                 return 'Tidak boleh kosong'
-                                            } 
+                                            }
                                         }}/>
                                     </td>
                                     <td className="py-4 px-2">
                                         <Input type="number" name='quantity' placeholder="1" validate={(value) => {
                                             if (value.length == 0) {
                                                 return 'Tidak boleh kosong'
-                                            } 
+                                            }
                                         }}/>
                                     </td>
                                     <td className="py-4 px-2">
                                         <Input type="number" name="price" placeholder="3500000" validate={(value) => {
                                             if (value.length == 0) {
                                                 return 'Tidak boleh kosong'
-                                            } 
+                                            }
                                         }}/>
                                     </td>
                                     {/* <td className="py-4 px-2 text-center">

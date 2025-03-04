@@ -7,6 +7,7 @@ import { NextRequest, NextResponse } from "next/server";
 export async function GET(req: NextRequest, res: NextResponse) {
     const workOrders = await prisma.workOrder.findMany({
         select: {
+            id: true,
             workOrderNumber: true,
             estimatedFinishDate: true,
             price: true,
@@ -28,9 +29,9 @@ export async function GET(req: NextRequest, res: NextResponse) {
 
 export async function POST(req: NextRequest, res: NextResponse) {
     const formData = await req.formData()
-    
+
     const workOrderNumber = `${formData.get('order')}/${formData.get('month')}/${formData.get('year')}`
-    
+
     const existingWorkOrder = await prisma.workOrder.findFirst({
         where: {
             workOrderNumber: workOrderNumber

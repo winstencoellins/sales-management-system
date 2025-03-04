@@ -2,7 +2,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 'use client'
 
-import { Alert } from "@heroui/alert"
 import { Form } from "@heroui/form"
 import { Input, Textarea } from "@heroui/input"
 import { Autocomplete, AutocompleteItem } from "@heroui/autocomplete"
@@ -24,6 +23,8 @@ export default function CreateWorkOrder() {
     const [description, setDescription] = useState<string>('')
     const [title, setTitle] = useState<string>('')
     const [clients, setClients] = useState([])
+    const [address, setAddress] = useState('')
+    const [tel, setTel] = useState('')
 
     useEffect(() => {
         getClients()
@@ -37,7 +38,22 @@ export default function CreateWorkOrder() {
         const response = await fetch('/api/clients')
         const data = await response.json()
 
-        setClients(data)
+        const clientData = data.filter((client: any) => client.status == 'ACTIVE')
+
+        setClients(clientData)
+    }
+
+    /**
+     * This function handles the address and telephone
+     * input if the dropdown form changes
+     * 
+     * @param event
+     */
+    const handleChange = (event: any) => {
+        const clientData: any = clients.find((client: any) => client.name == event)
+
+        setAddress(clientData.address)
+        setTel(clientData.telephone)
     }
 
     /**
@@ -53,6 +69,10 @@ export default function CreateWorkOrder() {
 
         try {
             const formData = new FormData(event.currentTarget)
+
+            for (const pair of formData.entries()) {
+                console.log(pair[0], pair[1])
+            }
 
             const response = await fetch('/api/work-orders', {
                 method: "POST",
@@ -119,19 +139,19 @@ export default function CreateWorkOrder() {
                                     <tr className="">
                                         <td className="pr-2 text-right py-2">No. SPK: </td>
                                         <td className="flex items-center py-2">
-                                            <Input type="number" className="w-[75px]" placeholder="01" validate={(value) => {
+                                            <Input type="number" name='order' className="w-[75px]" placeholder="01" validate={(value) => {
                                                 if (value.length == 0) {
                                                     return "Tidak boleh kosong"
                                                 }
                                             }} />
                                             <p className="mx-2">/</p>
-                                            <Input type="number" className="w-[75px]" placeholder="01" validate={(value) => {
+                                            <Input type="number" name='month' className="w-[75px]" placeholder="01" validate={(value) => {
                                                 if (value.length == 0) {
                                                     return "Tidak boleh kosong"
                                                 }
                                             }} />
                                             <p className="mx-2">/</p>
-                                            <Input type="number" className="w-[75px]" placeholder="01" validate={(value) => {
+                                            <Input type="number" name='year' className="w-[75px]" placeholder="01" validate={(value) => {
                                                 if (value.length == 0) {
                                                     return "Tidak boleh kosong"
                                                 }
@@ -141,7 +161,7 @@ export default function CreateWorkOrder() {
                                     <tr className="">
                                         <td className="pr-2 text-right py-2">Pekerja: </td>
                                         <td className="py-2">
-                                            <Input type="text" className="" validate={(value) => {
+                                            <Input type="text" name='worker' className="" validate={(value) => {
                                                 if (value.length == 0) {
                                                     return "Tidak boleh kosong"
                                                 }
@@ -151,7 +171,7 @@ export default function CreateWorkOrder() {
                                     <tr className="">
                                         <td className="pr-2 text-right w-full py-2">Tanggal Selesai: </td>
                                         <td className="py-2">
-                                            <Input type="date" className="" validate={(value) => {
+                                            <Input type="date" name='date' className="" validate={(value) => {
                                                 if (value.length == 0) {
                                                     return "Tidak boleh kosong"
                                                 }
@@ -166,7 +186,7 @@ export default function CreateWorkOrder() {
 
                         <div className="flex mt-5 justify-between">
                             <div className="w-1/2">
-                                <Textarea placeholder="Masukkan catatan ..." label="Catatan:" labelPlacement="outside" className="text-slate-400" />
+                                <Textarea name="notes" placeholder="Masukkan catatan ..." label="Catatan:" labelPlacement="outside" className="text-slate-400" />
                             </div>
 
                             <div className="text-slate-400">
@@ -177,21 +197,25 @@ export default function CreateWorkOrder() {
                                         <tr>
                                             <td className="py-2 text-right px-2">Nama Klien: </td>
                                             <td className="py-2">
-                                                <Autocomplete className="">
-                                                    <AutocompleteItem key={1} className="bg-red-100 rounded-none">ASDF</AutocompleteItem>
+                                                <Autocomplete name='client' onSelectionChange={(key: any) => handleChange(key)} className="">
+                                                    {
+                                                        clients.map((client: any, index: number) => (
+                                                            <AutocompleteItem key={client.name} className="bg-white rounded-none">{client.name}</AutocompleteItem>
+                                                        ))
+                                                    }
                                                 </Autocomplete>
                                             </td>
                                         </tr>
                                         <tr>
                                             <td className="py-2 text-right px-2">Alamat: </td>
                                             <td className="py-2">
-                                                <Input type="text" disabled className="hover:cursor-not-allowed" />
+                                                <Input type="text" value={address} disabled className="hover:cursor-not-allowed" />
                                             </td>
                                         </tr>
                                         <tr>
                                             <td className="py-2 text-right px-2">No. Telepon: </td>
                                             <td className="py-2">
-                                                <Input type="text" disabled className="hover:cursor-not-allowed" />
+                                                <Input type="text" value={tel} disabled className="hover:cursor-not-allowed" />
                                             </td>
                                         </tr>
                                     </tbody>
@@ -213,21 +237,21 @@ export default function CreateWorkOrder() {
                             <tbody>
                                 <tr>
                                     <td className="py-4 px-2">
-                                        <Input type="text" placeholder="Lemari 3 pintu" validate={(value) => {
+                                        <Input type="text" name='itemDescription' placeholder="Lemari 3 pintu" validate={(value) => {
                                             if (value.length == 0) {
                                                 return 'Tidak boleh kosong'
                                             } 
                                         }}/>
                                     </td>
                                     <td className="py-4 px-2">
-                                        <Input type="number" placeholder="1" validate={(value) => {
+                                        <Input type="number" name='quantity' placeholder="1" validate={(value) => {
                                             if (value.length == 0) {
                                                 return 'Tidak boleh kosong'
                                             } 
                                         }}/>
                                     </td>
                                     <td className="py-4 px-2">
-                                        <Input type="number" placeholder="3500000" validate={(value) => {
+                                        <Input type="number" name="price" placeholder="3500000" validate={(value) => {
                                             if (value.length == 0) {
                                                 return 'Tidak boleh kosong'
                                             } 

@@ -15,9 +15,9 @@ const user = {
 }
 const navigation = [
   { name: 'Dashboard', href: '/dashboard', current: false },
-  { name: 'Work Orders', href: '/dashboard/work-orders', current: false },
-  { name: 'Invoices', href: '/dashboard/invoices', current: false },
-  { name: 'Clients', href: '/dashboard/clients', current: false },
+  { name: 'Client', href: '/dashboard/clients', current: false },
+  { name: 'Work Order', href: '/dashboard/work-orders', current: false },
+  { name: 'Invoice', href: '/dashboard/invoices', current: false },
 
 ]
 const userNavigation = [

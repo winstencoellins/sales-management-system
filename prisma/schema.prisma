@@ -38,13 +38,12 @@ model User {
 model WorkOrder {
   id                        Int                   @id @default(autoincrement())
   workOrderNumber           String                @unique
-  furnitureSize             String
   estimatedFinishDate       DateTime
   createdDate               DateTime              @default(now())
   price                     Int
   worker                    String
   quantity                  Int
-  productDescription        String
+  itemDescription           String
 
   notes                     String?
 

@@ -9,6 +9,8 @@ import Image from "next/image"
 import Link from "next/link"
 
 import leftArrow from '@/public/left-arrow.svg'
+import plus from '@/public/plus.svg'
+
 
 import { FormEvent, useState } from "react"
 import { useRouter } from "next/navigation"
@@ -54,46 +56,53 @@ export default function CreateClient() {
 
 
             <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-                <Form validationBehavior="native" onSubmit={onSubmit}>
-                    <Input
-                        isRequired
-                        label="Client Name"
-                        labelPlacement="outside"
-                        placeholder="Apple Inc."
-                        name="clientName"
-                        className="lg:my-1"
-                        validate={(value) => {
-                            if (value.length == 0) {
-                                return "This field should not be empty.";
-                            }
-                        }}
-                    />
-                    <Input
-                        label="Address"
-                        labelPlacement="outside"
-                        placeholder="Mississippi St"
-                        name="address"
-                        className="lg:my-1"
-                    />
-                    <Input
-                        label="Telephone Number"
-                        labelPlacement="outside"
-                        placeholder="081123456789"
-                        name="tel"
-                        className="lg:my-1"
-                        validate={(value) => {
-                            if (value.length == 0) {
-                                return "This field should not be empty.";
-                            }
-                        }}
-                    />
+                <div className="bg-white w-6/12 mx-auto px-5 py-5 rounded-lg my-8">
+                    <h1 className="text-xl">Register New Client</h1>
 
-                    <div className="lg:flex lg:justify-end lg:w-full">
-                        <button type="submit" disabled={isLoading} className="text-indigo-700 bg-indigo-50 px-5 py-2 mt-5 rounded-lg ring-1 ring-indigo-700/10 ring-inset">
-                            {isLoading ? 'Loading ...' : 'Create'}
-                        </button>
-                    </div>
-                </Form>
+                    <hr className="my-5"/>
+
+                    <Form validationBehavior="native" onSubmit={onSubmit}>
+                        <Input
+                            isRequired
+                            label="Client Name"
+                            labelPlacement="outside"
+                            placeholder="Apple Inc."
+                            name="clientName"
+                            className="lg:my-5"
+                            validate={(value) => {
+                                if (value.length == 0) {
+                                    return "This field should not be empty.";
+                                }
+                            }}
+                        />
+                        <Input
+                            label="Address"
+                            labelPlacement="outside"
+                            placeholder="Mississippi St"
+                            name="address"
+                            className="lg:my-5"
+                        />
+                        <Input
+                            label="Telephone Number"
+                            labelPlacement="outside"
+                            placeholder="081123456789"
+                            name="tel"
+                            className="lg:my-5"
+                            validate={(value) => {
+                                if (value.length == 0) {
+                                    return "This field should not be empty.";
+                                }
+                            }}
+                        />
+
+                        <div className="lg:flex lg:justify-end lg:w-full">
+                            <button type="submit" disabled={isLoading} className="text-indigo-700 bg-indigo-50 px-5 py-2 mt-5 rounded-lg ring-1 ring-indigo-700/10 ring-inset">
+
+                                {isLoading ? 'Loading ...' : <div className="flex items-center"><Image src={plus} alt='icon' width={16} height={16} className="mr-2" /> Create New</div>}
+                            </button>
+                        </div>
+                    </Form>
+                </div>
 
             </div>
 

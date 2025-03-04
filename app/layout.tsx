@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Poppins } from "next/font/google";
+import { Josefin_Sans } from "next/font/google";
 import "./globals.css";
 
 // const geistSans = Geist({
@@ -11,8 +11,8 @@ import "./globals.css";
 //   variable: "--font-geist-mono",
 //   subsets: ["latin"],
 // });
-const poppins = Poppins({
-  weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'],
+const josefinSans = Josefin_Sans({
+  weight: ['100', '200', '300', '400', '500', '600', '700'],
   subsets: ['latin'],
   display: 'swap'
 })
@@ -30,7 +30,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="bg-slate-50">
       <body
-        className={`${poppins.className} antialiased`}
+        className={`${josefinSans.className} antialiased`}
       >
         {children}
       </body>

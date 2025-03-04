@@ -3,6 +3,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import clsx from 'clsx'
 
 import Image from 'next/image'
 import Link from 'next/link'
@@ -29,6 +30,8 @@ export default function WorkOrders() {
         }
 
         const data = await response.json()
+
+        console.log(data)
 
         // Work Order that is not overdue
         const onTrack = data.filter((workOrder: any) => workOrderOnTrack(workOrder.estimatedFinishDate))
@@ -79,7 +82,7 @@ export default function WorkOrders() {
             <main className='mb-[50px]'>
                 <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
                     {/* Work Orders */}
-                    <div className='my-10 bg-white px-5 py-5 rounded-lg'>
+                    <div className='my-10 bg-white px-5 py-5 rounded-lg shadow-md'>
                         <div className='flex justify-between mb-8'>
                             <input type="text" placeholder='Search by Customer, Work Order #' className='border border-slate-200 px-2 py-3 rounded-md text-sm w-[350px]'/>
 
@@ -117,18 +120,18 @@ export default function WorkOrders() {
                                     ?
                                     <tr><td className='text-slate-500 py-5'>No work order ...</td></tr>
                                     :
-                                    overdue.map((workOrder: any) => (
+                                    arr.map((workOrder: any) => (
                                         <tr className='border-b' key={workOrder.workOrderNumber}>
                                             <td className='py-4 pl-2'>{workOrder.workOrderNumber}</td>
-                                            <td className='py-4 pl-2'>({workOrder.furnitureSize}) cm</td>
+                                            <td className='py-4 pl-2'>{workOrder.client.name}</td>
                                             <td className='py-4 pl-2'>{workOrder.estimatedFinishDate.split('T')[0]}</td>
                                             <td className='py-4 pl-2'>Rp. {workOrder.price}</td>
                                             <td className='py-4 pl-2'>
-                                                <p>
+                                                <p className={clsx('px-3 py-1 w-fit rounded-full', workOrder.status == 'NOT_STARTED' ? 'bg-slate-50 text-slate-700' : workOrder.status == 'ONGOING' ? 'bg-orang-50 text-orange-700' : workOrder.status == 'COMPLETED' ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700')}>
                                                     {workOrder.status == 'NOT_STARTED' ? 'Not Started' : capitalize(workOrder.status)}
                                                 </p>
                                             </td>
-                                            <td className='py-4 pl-2'>{workOrder.client.name}</td>
+                                            <td className='py-4 pl-2'>{workOrder.worker}</td>
                                             <td className='py-4 pl-2'>
                                                 <button className='text-indigo-700 hover:underline'>View Detail</button>
                                             </td>

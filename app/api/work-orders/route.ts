@@ -8,10 +8,10 @@ export async function GET(req: NextRequest, res: NextResponse) {
     const workOrders = await prisma.workOrder.findMany({
         select: {
             workOrderNumber: true,
-            furnitureSize: true,
             estimatedFinishDate: true,
             price: true,
             status: true,
+            worker: true,
             client: {
                 select: {
                     name: true
@@ -28,53 +28,39 @@ export async function GET(req: NextRequest, res: NextResponse) {
 
 export async function POST(req: NextRequest, res: NextResponse) {
     const formData = await req.formData()
-
-    const [workOrderNumber, furnitureSize, estimatedFinishDate, price, client, qty, worker, productDescription, notes]:any = [formData.get('workOrderNumber'), formData.get('furnitureSize'), formData.get('estimatedFinishDate'), formData.get('price'), formData.get('client'), formData.get('worker'), formData.get('qty'), formData.get('productDescription'), formData.get('notes')]
-
-    console.log(qty, worker, productDescription, notes)
-
-    const workOrder = await prisma.workOrder.findFirst({
+    
+    const workOrderNumber = `${formData.get('order')}/${formData.get('month')}/${formData.get('year')}`
+    
+    const existingWorkOrder = await prisma.workOrder.findFirst({
         where: {
             workOrderNumber: workOrderNumber
         }
     })
 
-    if (workOrder) {
-        return NextResponse.json({}, { status: 409 })
+    if (existingWorkOrder != null) {
+        return NextResponse.json({ success: false }, { status: 409 })
     }
+
+    const [worker, date, notes, client, itemDescription, quantity, price]: any = [formData.get('worker'), formData.get('date'), formData.get('notes'), formData.get('client'), formData.get('itemDescription'), formData.get('quantity'), formData.get('price')]
 
     const clientId: any = await prisma.client.findFirst({
         where: {
             name: client
-        },
-        select: {
-            id: true
         }
     })
 
-    console.log(clientId.id)
-
-    // const userId: any = await prisma.user.findFirst({
-    //     where: {
-    //         id: 'ccd9a3d4-d7a5-4398-a74d-d8e9e34165eb'
-    //     },
-    //     select: {
-    //         id: true
-    //     }
-    // })
+    console.log(workOrderNumber, date, price, worker, quantity, notes, itemDescription)
 
     const createWorkOrder = await prisma.workOrder.create({
         data: {
             workOrderNumber: workOrderNumber,
-            furnitureSize: furnitureSize,
-            estimatedFinishDate: estimatedFinishDate + 'T00:00:00.000Z',
+            estimatedFinishDate: date + 'T00:00:00.000Z',
             price: parseInt(price),
-            clientId: clientId.id,
             worker: worker,
-            productDescription: productDescription,
+            quantity: parseInt(quantity),
             notes: notes,
-            quantity: parseInt(qty)
-            // userId: userId.id,
+            clientId: clientId.id,
+            itemDescription: itemDescription
         }
     })
 
@@ -93,7 +79,6 @@ export async function PUT(req: NextRequest, res: NextResponse) {
             workOrderNumber: workOrderNumber
         },
         data: {
-            furnitureSize: furnitureSize,
             estimatedFinishDate: estimatedFinishDate + 'T00:00:00.000Z',
             price: parseInt(price),
             status: status,

@@ -148,16 +148,6 @@ export default function EditClient() {
 
             <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
                 <Alert
-                    color={'success'}
-                    description={'Client has successfully updated.'}
-                    isVisible={isVisible}
-                    title={message}
-                    variant="faded"
-                    onClose={() => setIsVisible(false)}
-                    className="mb-5"
-                />
-
-                <Alert
                     color={status == 'INACTIVE' ? 'danger' : 'warning'}
                     description={status == 'INACTIVE' ? 'This client has been removed from the dropdown list. To include it into the dropdown list, please reactivate this client by clicking on the Activate button.' : 'This client is included in the dropdown list. If this client is no longer in use, please deactivate this client by clicking on the deactivate button.'}
                     isVisible={notification}
@@ -167,53 +157,59 @@ export default function EditClient() {
                     className="mb-5"
                 />
 
-                <Form validationBehavior="native" onSubmit={onSubmit}>
-                    <Input
-                        isRequired
-                        label="Client Name"
-                        labelPlacement="outside"
-                        placeholder="Apple Inc."
-                        name="clientName"
-                        className="lg:my-1"
-                        value={clientName}
-                        onValueChange={(value: string) => setClientName(value)}
-                        validate={(value) => {
-                            if (value.length == 0) {
-                                return "This field should not be empty.";
-                            }
-                        }}
-                    />
-                    <Input
-                        label="Address"
-                        labelPlacement="outside"
-                        placeholder="Mississippi St"
-                        name="address"
-                        className="lg:my-1"
-                        value={address}
-                        onValueChange={(value: string) => setAddress(value)}
-                    />
-                    <Input
-                        label="Telephone Number"
-                        labelPlacement="outside"
-                        placeholder="081123456789"
-                        name="tel"
-                        className="lg:my-1"
-                        value={tel}
-                        onValueChange={(value: string) => setTel(value)}
-                        validate={(value) => {
-                            if (value.length == 0) {
-                                return "This field should not be empty.";
-                            }
-                        }}
-                    />
+                <div className="bg-white w-6/12 mx-auto px-5 py-5 rounded-lg my-8">
+                    <h1 className="text-xl">Edit Client Information</h1>
 
-                    <div className="lg:flex lg:justify-end lg:w-full">
-                        <button type="submit" disabled={isLoading} className="text-indigo-700 bg-indigo-50 px-5 py-2 mt-5 rounded-lg ring-1 ring-indigo-700/10 ring-inset lg:flex lg:items-center">
-                            <Image src={pencil} alt='pencil' height={20} width={20} className="mr-2" />
-                            {isLoading ? 'Loading ...' : 'Edit'}
-                        </button>
-                    </div>
-                </Form>
+                    <hr className="my-5"/>
+
+                    <Form validationBehavior="native" onSubmit={onSubmit}>
+                        <Input
+                            isRequired
+                            label="Client Name"
+                            labelPlacement="outside"
+                            placeholder="Apple Inc."
+                            name="clientName"
+                            className="lg:my-5"
+                            value={clientName}
+                            onValueChange={(value: string) => setClientName(value)}
+                            validate={(value) => {
+                                if (value.length == 0) {
+                                    return "This field should not be empty.";
+                                }
+                            }}
+                        />
+                        <Input
+                            label="Address"
+                            labelPlacement="outside"
+                            placeholder="Mississippi St"
+                            name="address"
+                            className="lg:my-5"
+                            value={address}
+                            onValueChange={(value: string) => setAddress(value)}
+                        />
+                        <Input
+                            label="Telephone Number"
+                            labelPlacement="outside"
+                            placeholder="081123456789"
+                            name="tel"
+                            className="lg:my-5"
+                            value={tel}
+                            onValueChange={(value: string) => setTel(value)}
+                            validate={(value) => {
+                                if (value.length == 0) {
+                                    return "This field should not be empty.";
+                                }
+                            }}
+                        />
+
+                        <div className="lg:flex lg:justify-end lg:w-full">
+                            <button type="submit" disabled={isLoading} className="text-indigo-700 bg-indigo-50 px-5 py-2 mt-5 rounded-lg ring-1 ring-indigo-700/10 ring-inset lg:flex lg:items-center">
+                                <Image src={pencil} alt='pencil' height={20} width={20} className="mr-2" />
+                                {isLoading ? 'Loading ...' : 'Edit'}
+                            </button>
+                        </div>
+                    </Form>
+                </div>
             </div>
 
         </>

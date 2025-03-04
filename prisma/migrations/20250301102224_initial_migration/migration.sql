@@ -7,12 +7,16 @@ CREATE TYPE "InvoiceStatus" AS ENUM ('UNPAID', 'PAID');
 -- CreateEnum
 CREATE TYPE "WorkOrderStatus" AS ENUM ('NOT_STARTED', 'ONGOING', 'COMPLETED', 'CANCELLED');
 
+-- CreateEnum
+CREATE TYPE "ClientStatus" AS ENUM ('INACTIVE', 'ACTIVE');
+
 -- CreateTable
 CREATE TABLE "Client" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "address" TEXT,
     "telephone" TEXT NOT NULL,
+    "status" "ClientStatus" NOT NULL DEFAULT 'ACTIVE',
 
     CONSTRAINT "Client_pkey" PRIMARY KEY ("id")
 );
@@ -34,13 +38,16 @@ CREATE TABLE "User" (
 CREATE TABLE "WorkOrder" (
     "id" SERIAL NOT NULL,
     "workOrderNumber" TEXT NOT NULL,
-    "furnitureSize" TEXT NOT NULL,
     "estimatedFinishDate" TIMESTAMP(3) NOT NULL,
     "createdDate" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "price" INTEGER NOT NULL,
+    "worker" TEXT NOT NULL,
+    "quantity" INTEGER NOT NULL,
+    "itemDescription" TEXT NOT NULL,
+    "notes" TEXT,
     "status" "WorkOrderStatus" NOT NULL DEFAULT 'NOT_STARTED',
     "clientId" TEXT NOT NULL,
-    "userId" TEXT NOT NULL,
+    "userId" TEXT,
 
     CONSTRAINT "WorkOrder_pkey" PRIMARY KEY ("id")
 );
@@ -68,10 +75,10 @@ CREATE UNIQUE INDEX "WorkOrder_workOrderNumber_key" ON "WorkOrder"("workOrderNum
 CREATE UNIQUE INDEX "Invoices_invoiceNumber_key" ON "Invoices"("invoiceNumber");
 
 -- AddForeignKey
-ALTER TABLE "WorkOrder" ADD CONSTRAINT "WorkOrder_clientId_fkey" FOREIGN KEY ("clientId") REFERENCES "Client"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "WorkOrder" ADD CONSTRAINT "WorkOrder_clientId_fkey" FOREIGN KEY ("clientId") REFERENCES "Client"("id") ON DELETE NO ACTION ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "WorkOrder" ADD CONSTRAINT "WorkOrder_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "WorkOrder" ADD CONSTRAINT "WorkOrder_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE NO ACTION ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Invoices" ADD CONSTRAINT "Invoices_workOrderId_fkey" FOREIGN KEY ("workOrderId") REFERENCES "WorkOrder"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

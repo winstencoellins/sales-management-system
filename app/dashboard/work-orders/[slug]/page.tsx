@@ -67,12 +67,16 @@ export default function WorkOrdersDetail({ params }: { params: Promise<{ slug: s
         }
     }
 
-    const onSubmit = async () => {
-
-    }
-
     const capitalize = (word: string) => {
         return String(word).charAt(0).toUpperCase() + String(word).slice(1).toLowerCase()
+    }
+
+    const generatePDF = async () => {
+        const response = await fetch('/api/generate-work-order')
+
+        const blob = await response.blob()
+
+        console.log(blob)
     }
 
     return (
@@ -88,135 +92,158 @@ export default function WorkOrdersDetail({ params }: { params: Promise<{ slug: s
 
             <main className='mb-[100px]'>
                 <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 lg:mb-10 flex flex-row">
-                    {/* Work Order Form */}
-                    <Form validationBehavior="native" className="bg-white p-5 rounded-lg shadow-lg w-10/12 mr-5">
-                        {/* Work Order */}
-                        <div className="w-full">
-                            {/* Header */}
-                            <div className="flex justify-between">
-                                <div className="">
-                                    <h1>LOGO</h1>
-                                    <p className="text-sm text-slate-400">
-                                        Jln. K L Yos Sudarso No. 153 AB <br />
-                                        Medan, 20238, Sumatera Utara <br />
-                                        +62 81 - 111 - 1111
-                                    </p>
-                                </div>
 
-                                <table className="text-slate-400 text-sm">
-                                    <tbody>
-                                        <tr className="">
-                                            <td className="pr-2 text-right py-2">No. SPK: </td>
-                                            <td className="flex items-center py-2">
-                                                <Input type="number" disabled name='order' className="w-[75px]" value={order} />
-                                                <p className="mx-2">/</p>
-                                                <Input type="number" disabled name='month' className="w-[75px]" value={month} />
-                                                <p className="mx-2">/</p>
-                                                <Input type="number" disabled name='year' className="w-[75px]" value={year} />
-                                            </td>
-                                        </tr>
-                                        <tr className="">
-                                            <td className="pr-2 text-right py-2">Pekerja: </td>
-                                            <td className="py-2">
-                                                <Input type="text" name='worker' disabled value={worker} />
-                                            </td>
-                                        </tr>
-                                        <tr className="">
-                                            <td className="pr-2 text-right w-full py-2">Tanggal Selesai: </td>
-                                            <td className="py-2">
-                                                <Input type="date" disabled name='date' value={finishDate} />
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                    <div className="w-10/12 mr-5">
+                        <Form validationBehavior="native" className={`bg-white p-5 rounded-lg shadow-lg mb-10 ${isVisible ? 'block' : 'hidden'}`}>
+                            <p>Invoice Number: </p>
+                            <div className="flex flex-row">
+                                <Input type="number" name='invoiceOrder' className="w-[75px]" />
+                                <p className="mx-2">/</p>
+                                <Input type="number" name='invoiceMonth' className="w-[75px]" validate={(value: any) => {
+                                    if (value.length > 2) {
+                                        return "Tidak boleh lebih dari 2 angka"
+                                    }
+                                }}/>
+                                <p className="mx-2">/</p>
+                                <Input type="number" name='invoiceYear' className="w-[75px]" validate={(value: any) => {
+                                    if (value.length > 2) {
+                                        return "Tidak boleh lebih dari 2 angka"
+                                    }
+                                }} />
                             </div>
+                            <button type="submit">Create Invoice</button>
+                        </Form>
 
-                            <hr className="mt-5" />
+                        {/* Work Order Form */}
+                        <Form validationBehavior="native" className="bg-white p-5 rounded-lg shadow-lg">
+                            {/* Work Order */}
+                            <div className="w-full">
+                                {/* Header */}
+                                <div className="flex justify-between">
+                                    <div className="">
+                                        <h1>LOGO</h1>
+                                        <p className="text-sm text-slate-400">
+                                            Jln. K L Yos Sudarso No. 153 AB <br />
+                                            Medan, 20238, Sumatera Utara <br />
+                                            +62 81 - 111 - 1111
+                                        </p>
+                                    </div>
 
-                            <div className="flex mt-5 justify-between">
-                                <div className="w-1/2">
-                                    <Textarea name="notes" value={notes} label="Catatan:" labelPlacement="outside" className="text-slate-400" />
-                                </div>
-
-                                <div className="text-slate-400">
-                                    <h1 className="text-sm">Informasi Klien:</h1>
-
-                                    <table className="text-sm mt-2">
+                                    <table className="text-slate-400 text-sm">
                                         <tbody>
-                                            <tr>
-                                                <td className="py-2 text-right px-2">Nama Klien: </td>
-                                                <td className="py-2">
-                                                    <Input type="text" disabled value={clientName} />
+                                            <tr className="">
+                                                <td className="pr-2 text-right py-2">No. SPK: </td>
+                                                <td className="flex items-center py-2">
+                                                    <Input type="number" disabled name='order' className="w-[75px]" value={order} />
+                                                    <p className="mx-2">/</p>
+                                                    <Input type="number" disabled name='month' className="w-[75px]" value={month} />
+                                                    <p className="mx-2">/</p>
+                                                    <Input type="number" disabled name='year' className="w-[75px]" value={year} />
                                                 </td>
                                             </tr>
-                                            <tr>
-                                                <td className="py-2 text-right px-2">Alamat: </td>
+                                            <tr className="">
+                                                <td className="pr-2 text-right py-2">Pekerja: </td>
                                                 <td className="py-2">
-                                                    <Input type="text" value={address} disabled className="hover:cursor-not-allowed" />
+                                                    <Input type="text" name='worker' disabled value={worker} />
                                                 </td>
                                             </tr>
-                                            <tr>
-                                                <td className="py-2 text-right px-2">No. Telepon: </td>
+                                            <tr className="">
+                                                <td className="pr-2 text-right w-full py-2">Tanggal Selesai: </td>
                                                 <td className="py-2">
-                                                    <Input type="text" value={tel} disabled className="hover:cursor-not-allowed" />
+                                                    <Input type="date" disabled name='date' value={finishDate} />
                                                 </td>
                                             </tr>
                                         </tbody>
                                     </table>
                                 </div>
-                            </div>
 
-                            <hr className="my-5"/>
+                                <hr className="mt-5" />
 
-                            <table className="w-full text-left text-slate-400">
-                                <thead>
-                                    <tr className="bg-slate-50">
-                                        <th className="py-3 px-3">Deskripsi Item</th>
-                                        <th className="py-3 px-3">Qty</th>
-                                        <th className="py-3 px-3">Harga Satuan</th>
-                                        {/* <th className="py-3 px-3"></th> */}
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td className="py-4 px-2">
-                                            <Input type="text" disabled name='itemDescription' value={itemDescription} />
-                                        </td>
-                                        <td className="py-4 px-2">
-                                            <Input type="text" disabled name='quantity' value={qty} />
-                                        </td>
-                                        <td className="py-4 px-2">
-                                            <Input type="text" disabled name="price" value={price.toLocaleString()} />
-                                        </td>
-                                        {/* <td className="py-4 px-2 text-center">
-                                            <button className="bg-red-50 ring-1 ring-red-700/10 ring-inset px-2 py-2 rounded-md">
-                                                <Image src={trash} alt='icon' width={20} height={20} />
-                                            </button>
-                                        </td> */}
-                                    </tr>
-                                </tbody>
-                            </table>
+                                <div className="flex mt-5 justify-between">
+                                    <div className="w-1/2">
+                                        <Textarea name="notes" value={notes} label="Catatan:" labelPlacement="outside" className="text-slate-400" />
+                                    </div>
 
-                            <hr className="my-5" />
+                                    <div className="text-slate-400">
+                                        <h1 className="text-sm">Informasi Klien:</h1>
 
-                            <div className="w-full flex justify-end text-slate-400">
-                                <table>
+                                        <table className="text-sm mt-2">
+                                            <tbody>
+                                                <tr>
+                                                    <td className="py-2 text-right px-2">Nama Klien: </td>
+                                                    <td className="py-2">
+                                                        <Input type="text" disabled value={clientName} />
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td className="py-2 text-right px-2">Alamat: </td>
+                                                    <td className="py-2">
+                                                        <Input type="text" value={address} disabled className="hover:cursor-not-allowed" />
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td className="py-2 text-right px-2">No. Telepon: </td>
+                                                    <td className="py-2">
+                                                        <Input type="text" value={tel} disabled className="hover:cursor-not-allowed" />
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                <hr className="my-5"/>
+
+                                <table className="w-full text-left text-slate-400">
+                                    <thead>
+                                        <tr className="bg-slate-50">
+                                            <th className="py-3 px-3">Deskripsi Item</th>
+                                            <th className="py-3 px-3">Qty</th>
+                                            <th className="py-3 px-3">Harga Satuan</th>
+                                            {/* <th className="py-3 px-3"></th> */}
+                                        </tr>
+                                    </thead>
                                     <tbody>
                                         <tr>
-                                            <td className="px-5">Total Harga: </td>
-                                            <td>Rp. {(parseInt(qty) * parseInt(price)).toLocaleString()}</td>
+                                            <td className="py-4 px-2">
+                                                <Input type="text" disabled name='itemDescription' value={itemDescription} />
+                                            </td>
+                                            <td className="py-4 px-2">
+                                                <Input type="text" disabled name='quantity' value={qty} />
+                                            </td>
+                                            <td className="py-4 px-2">
+                                                <Input type="text" disabled name="price" value={price.toLocaleString()} />
+                                            </td>
+                                            {/* <td className="py-4 px-2 text-center">
+                                                <button className="bg-red-50 ring-1 ring-red-700/10 ring-inset px-2 py-2 rounded-md">
+                                                    <Image src={trash} alt='icon' width={20} height={20} />
+                                                </button>
+                                            </td> */}
                                         </tr>
                                     </tbody>
                                 </table>
+
+                                <hr className="my-5" />
+
+                                <div className="w-full flex justify-end text-slate-400">
+                                    <table>
+                                        <tbody>
+                                            <tr>
+                                                <td className="px-5">Total Harga: </td>
+                                                <td>Rp. {(parseInt(qty) * parseInt(price)).toLocaleString()}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
-                        </div>
-                    </Form>
+                        </Form>
+                    </div>
 
                     <div className="bg-white w-2/12 flex flex-col shadow-xl h-fit p-3">
-                        <button className="mb-5 bg-indigo-700 text-white px-1 py-2 rounded-md">Generate Work Order</button>
-                        <button className="mb-5 bg-indigo-700 text-white px-1 py-2 rounded-md">Create Invoice</button>
+                        <button className="mb-5 bg-indigo-700 text-white px-1 py-2 rounded-md" onClick={generatePDF}>Generate PDF</button>
+                        <button className="mb-5 bg-indigo-700 text-white px-1 py-2 rounded-md" onClick={() => isVisible ? setIsVisible(false) : setIsVisible(true)}>{isVisible ? 'Close' : 'Open'} Invoice</button>
                         <div className="text-center">
-                            <Link href={`/dashboard/work-order/${path.split('/')[3]}/edit`}>Edit Work Order</Link>
+                            <Link href={`/dashboard/work-orders/${path.split('/')[3]}/edit`}>Edit Work Order</Link>
                         </div>
                     </div>
                 </div>

@@ -90,8 +90,25 @@ export default function EditWorkOrder() {
         setTel(clientData.telephone)
     }
 
-    const onSubmit = async () => {
+    const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
+        event.preventDefault()
 
+        const formData = new FormData(event.currentTarget)
+
+        if (formData.get('client') == '') {
+            formData.set('client', clientName)
+        }
+
+        formData.set('id', path.split('/')[3])
+
+        const response = await fetch(`/api/work-orders`, {
+            method: 'PUT',
+            body: formData
+        })
+
+        const data = await response.json()
+
+        console.log(data)
     }
 
 
@@ -109,7 +126,7 @@ export default function EditWorkOrder() {
 
 
             <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-                <Form validationBehavior="native" className="bg-white p-5 rounded-lg shadow-lg w-10/12 mr-5">
+                <Form validationBehavior="native" className="bg-white p-5 rounded-lg shadow-lg w-10/12 mr-5" onSubmit={onSubmit}>
                     {/* Work Order */}
                     <div className="w-full">
                         {/* Header */}
@@ -271,6 +288,8 @@ export default function EditWorkOrder() {
                             </table>
                         </div>
                     </div>
+
+                    <button type="submit">Save</button>
                 </Form>
             </div>
         </>

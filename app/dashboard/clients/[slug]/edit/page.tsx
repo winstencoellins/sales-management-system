@@ -35,6 +35,11 @@ export default function EditClient() {
         getClientDetail()
     }, [])
 
+    /**
+     * This function handles the changes submitted
+     * by the user to the database
+     * @param event
+     */
     const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault()
         setIsLoading(true)
@@ -67,6 +72,11 @@ export default function EditClient() {
         }
     }
 
+    /**
+     * This function hanldes the activation and deactivation
+     * of a client
+     * @param event
+     */
     const handleClick = async (event: any) => {
         const active = event.currentTarget.id == 'activate' ? false : true
         const clientId = path.split('/')[3]
@@ -100,6 +110,10 @@ export default function EditClient() {
         }
     }
 
+    /**
+     * This function fetches client detail
+     * from the database
+     */
     const getClientDetail = async () => {
         const response = await fetch(`/api/clients/${path.split('/')[3]}`, {
             method: "GET",
@@ -204,8 +218,8 @@ export default function EditClient() {
 
                         <div className="lg:flex lg:justify-end lg:w-full">
                             <button type="submit" disabled={isLoading} className="text-indigo-700 bg-indigo-50 px-5 py-2 mt-5 rounded-lg ring-1 ring-indigo-700/10 ring-inset lg:flex lg:items-center">
-                                <Image src={pencil} alt='pencil' height={20} width={20} className="mr-2" />
-                                {isLoading ? 'Loading ...' : 'Edit'}
+                                <Image src={pencil} alt='pencil' height={16} width={16} className="mr-2" />
+                                {isLoading ? 'Loading ...' : 'Save'}
                             </button>
                         </div>
                     </Form>

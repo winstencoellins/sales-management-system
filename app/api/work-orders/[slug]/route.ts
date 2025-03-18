@@ -30,3 +30,21 @@ export async function GET(req: NextRequest, res: NextResponse) {
 
     return NextResponse.json(workOrderDetail, { status: 200 })
 }
+
+export async function PUT(req: NextRequest, res: NextResponse) {
+    const workOrderId = req.url.split('/')[5]
+    const data = await req.json()
+
+    const updateWorkOrderStatus = await prisma.workOrder.update({
+        where: {
+            id: parseInt(workOrderId)
+        },
+        data: {
+            status: data.status
+        }
+    })
+
+
+    return NextResponse.json({success: true, message: "Status updated successfully!"}, { status: 201 })
+
+}

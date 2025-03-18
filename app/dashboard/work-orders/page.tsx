@@ -125,15 +125,15 @@ export default function WorkOrders() {
                                             <td className='py-4 pl-2'>{workOrder.workOrderNumber}</td>
                                             <td className='py-4 pl-2'>{workOrder.client.name}</td>
                                             <td className='py-4 pl-2'>{workOrder.estimatedFinishDate.split('T')[0]}</td>
-                                            <td className='py-4 pl-2'>Rp. {workOrder.price}</td>
+                                            <td className='py-4 pl-2'>Rp. {workOrder.price.toLocaleString()}</td>
                                             <td className='py-4 pl-2'>
-                                                <p className={clsx('px-3 py-1 w-fit rounded-full', workOrder.status == 'NOT_STARTED' ? 'bg-slate-50 text-slate-700' : workOrder.status == 'ONGOING' ? 'bg-orang-50 text-orange-700' : workOrder.status == 'COMPLETED' ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700')}>
-                                                    {workOrder.status == 'NOT_STARTED' ? 'Not Started' : capitalize(workOrder.status)}
+                                                <p className={clsx('px-3 py-1 w-fit rounded-full', workOrder.status == 'NOT_STARTED' ? 'bg-slate-50 text-slate-700' : workOrder.status == 'ONGOING' ? 'bg-orange-50 text-orange-700' : workOrder.status == 'COMPLETED' ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700')}>
+                                                    {workOrder.status == 'NOT_STARTED' ? 'Not Started' : `${workOrder.status.charAt(0).toUpperCase() + workOrder.status.slice(1).toLowerCase()}`}
                                                 </p>
                                             </td>
                                             <td className='py-4 pl-2'>{workOrder.worker}</td>
                                             <td className='py-4 pl-2'>
-                                                <Link href={`/dashboard/work-orders/${workOrder.id}`}>View Detail</Link>
+                                                <Link href={`/dashboard/work-orders/${workOrder.id}`} className='text-indigo-700 hover:underline'>View Detail</Link>
                                             </td>
                                         </tr>
                                     ))

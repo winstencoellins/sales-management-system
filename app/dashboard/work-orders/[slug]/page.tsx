@@ -13,8 +13,14 @@ import { useEffect, useState } from "react"
 import { Form } from "@heroui/form"
 import { Input, Textarea } from "@heroui/input"
 
+import clsx from "clsx"
+import { Alert } from "@heroui/alert"
+
 export default function WorkOrdersDetail({ params }: { params: Promise<{ slug: string }>}) {
     const path = usePathname()
+
+    const [message, setMessage] = useState<string>('')
+    const [isAlertVisible, setIsAlertVisible] = useState<boolean>(false)
 
     const [order, setOrder] = useState<string>('')
     const [month, setMonth] = useState<string>('')
@@ -35,6 +41,10 @@ export default function WorkOrdersDetail({ params }: { params: Promise<{ slug: s
         getWorkOrderDetail()
     }, [])
 
+    /**
+     * This function fetches the detail of work
+     * order from the database
+     */
     const getWorkOrderDetail = async () => {
         const workOrderNumber = path.split('/')[3]
 
@@ -71,12 +81,58 @@ export default function WorkOrdersDetail({ params }: { params: Promise<{ slug: s
         return String(word).charAt(0).toUpperCase() + String(word).slice(1).toLowerCase()
     }
 
-    const generatePDF = async () => {
-        const response = await fetch('/api/generate-work-order')
+    /**
+     * This function sets the status of current
+     * work order to Ongoing
+     */
+    const handleClickStart = async () => {
+        try {
+            const response = await fetch(`/api/work-orders/${path.split('/')[3]}`, {
+                method: "PUT",
+                body: JSON.stringify({ status: 'ONGOING' })
+            })
 
-        const blob = await response.blob()
+            if (!response.ok) {
+                throw new Error ('Something went wrong. Please try again.')
+            }
 
-        console.log(blob)
+            const data = await response.json()
+
+            if (data.success) {
+                setStatus('ONGOING')
+                setMessage(data.message)
+                setIsAlertVisible(true)
+            }
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    /**
+     * This function sets the status of current
+     * work order to Cancelled
+     */
+    const handleClickCancel = async () => {
+        try {
+            const response = await fetch(`/api/work-orders/${path.split('/')[3]}`, {
+                method: "PUT",
+                body: JSON.stringify({ status: 'CANCELLED' })
+            })
+
+            if (!response.ok) {
+                throw new Error("Something went wrong. Please try again.")
+            }
+
+            const data = await response.json()
+
+            if (data.success) {
+                setStatus('CANCELLED')
+                setMessage(data.message)
+                setIsAlertVisible(true)
+            }
+        } catch (error) {
+            console.log(error)
+        }
     }
 
     return (
@@ -91,31 +147,39 @@ export default function WorkOrdersDetail({ params }: { params: Promise<{ slug: s
             </header>
 
             <main className='mb-[100px]'>
+                <div className="max-w-7xl mx-auto mt-10 lg:px-8">
+                    <Alert color={'success'} title={message} className={`${isAlertVisible ? 'flex' : 'hidden'}`} />
+                </div>
                 <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 lg:mb-10 flex flex-row">
-
                     <div className="w-10/12 mr-5">
-                        <Form validationBehavior="native" className={`bg-white p-5 rounded-lg shadow-lg mb-10 ${isVisible ? 'block' : 'hidden'}`}>
-                            <p>Invoice Number: </p>
-                            <div className="flex flex-row">
-                                <Input type="number" name='invoiceOrder' className="w-[75px]" />
-                                <p className="mx-2">/</p>
-                                <Input type="number" name='invoiceMonth' className="w-[75px]" validate={(value: any) => {
-                                    if (value.length > 2) {
-                                        return "Tidak boleh lebih dari 2 angka"
-                                    }
-                                }}/>
-                                <p className="mx-2">/</p>
-                                <Input type="number" name='invoiceYear' className="w-[75px]" validate={(value: any) => {
-                                    if (value.length > 2) {
-                                        return "Tidak boleh lebih dari 2 angka"
-                                    }
-                                }} />
+                        <Form validationBehavior="native" className={`bg-white p-5 rounded-lg shadow-lg mb-5 ${isVisible ? 'block' : 'hidden'}`}>
+                            <h1 className="text-2xl font-semibold mb-2">Create Invoice</h1>
+                            <hr className="my-2"/>
+                            <div className="flex items-center">
+                                <p className="mb-1 mr-2">Invoice Number: </p>
+                                <div className="flex flex-row mb-3 items-center">
+                                    <Input type="number" name='invoiceOrder' className="w-[75px]" />
+                                    <p className="mx-2">/</p>
+                                    <Input type="number" name='invoiceMonth' className="w-[75px]" validate={(value: any) => {
+                                        if (value.length > 2) {
+                                            return "Tidak boleh lebih dari 2 angka"
+                                        }
+                                    }}/>
+                                    <p className="mx-2">/</p>
+                                    <Input type="number" name='invoiceYear' className="w-[75px]" validate={(value: any) => {
+                                        if (value.length > 2) {
+                                            return "Tidak boleh lebih dari 2 angka"
+                                        }
+                                    }} />
+                                </div>
                             </div>
-                            <button type="submit">Create Invoice</button>
+                            <button type="submit" className="bg-indigo-50 mt-5 text-indigo-700 ring-1 ring-indigo-700/10 ring-inset px-3 py-2 rounded-md">Create Invoice</button>
                         </Form>
 
                         {/* Work Order Form */}
                         <Form validationBehavior="native" className="bg-white p-5 rounded-lg shadow-lg">
+                            <div className={clsx('px-3 py-1 rounded-md mb-3 font-bold', status == 'NOT_STARTED' ? 'bg-slate-100 text-slate-700' : status == 'ONGOING' ? 'bg-orange-50 text-orange-700' : status == 'COMPLETED' ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700')}>{status == 'NOT_STARTED' ? 'Not started' : status.charAt(0).toUpperCase() + status.slice(1).toLowerCase()}</div>
+
                             {/* Work Order */}
                             <div className="w-full">
                                 {/* Header */}
@@ -239,11 +303,14 @@ export default function WorkOrdersDetail({ params }: { params: Promise<{ slug: s
                         </Form>
                     </div>
 
-                    <div className="bg-white w-2/12 flex flex-col shadow-xl h-fit p-3">
-                        <button className="mb-5 bg-indigo-700 text-white px-1 py-2 rounded-md" onClick={generatePDF}>Generate PDF</button>
-                        <button className="mb-5 bg-indigo-700 text-white px-1 py-2 rounded-md" onClick={() => isVisible ? setIsVisible(false) : setIsVisible(true)}>{isVisible ? 'Close' : 'Open'} Invoice</button>
+                    <div className="bg-white w-2/12 flex flex-col shadow-xl h-fit p-3 rounded-lg">
+                        <button className={`mb-5 px-1 py-2 rounded-md ${status == 'CANCELLED' ? 'bg-slate-200 text-slate-400' : 'bg-indigo-700 text-white'}`} disabled={status == 'CANCELLED' ? true : false}>Generate PDF</button>
+                        <button className={`mb-5 bg-indigo-700 text-white px-1 py-2 rounded-md ${status != 'ONGOING' ? 'hidden' : 'block'}`} onClick={() => isVisible ? setIsVisible(false) : setIsVisible(true)}>{isVisible ? 'Close' : 'Open'} Invoice</button>
+                        <button className={`mb-5 bg-indigo-700 text-white px-1 py-2 rounded-md ${status == 'NOT_STARTED' ? 'block' : 'hidden'}`} onClick={handleClickStart}>Start Work Order</button>
+                        <button className={`mb-5 bg-red-700 text-white px-1 py-2 rounded-md ${status == 'NOT_STARTED' ? 'block' : 'hidden'}`} onClick={handleClickCancel}>Cancel Work Order</button>
+
                         <div className="text-center">
-                            <Link href={`/dashboard/work-orders/${path.split('/')[3]}/edit`}>Edit Work Order</Link>
+                            <Link href={`/dashboard/work-orders/${path.split('/')[3]}/edit`} className={`text-indigo-700 font-semibold hover:underline ${status == 'CANCELLED' ? 'hidden' : 'block'}`}>Edit Work Order</Link>
                         </div>
                     </div>
                 </div>

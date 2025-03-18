@@ -96,9 +96,7 @@ export async function PUT(req: NextRequest, res: NextResponse) {
         }
     })
 
-    console.log(updateWorkOrder)
-
-    return NextResponse.json({ success: true, message: `Work Order # updated successfully`})
+    return NextResponse.json({ success: true, message: `Work Order updated successfully!`})
 }
 
 export async function DELETE(req: NextRequest, res: NextResponse){

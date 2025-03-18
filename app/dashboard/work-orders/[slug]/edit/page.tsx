@@ -2,10 +2,12 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 'use client'
 
-import { Alert } from "@heroui/alert"
+import pencil from "@/public/pencil.svg"
+
 import { Form } from "@heroui/form"
 import { Input, Textarea } from "@heroui/input"
 import { Autocomplete, AutocompleteItem } from "@heroui/autocomplete"
+import { Alert } from "@heroui/alert"
 
 import Image from "next/image"
 import Link from "next/link"
@@ -19,6 +21,8 @@ export default function EditWorkOrder() {
     const path = usePathname()
 
     const [isLoading, setIsLoading] = useState<boolean>(false)
+    const [message, setMessage] = useState<string>('')
+    const [isVisible, setIsVisible] = useState<boolean>(false)
 
     const [order, setOrder] = useState<string>('')
     const [month, setMonth] = useState<string>('')
@@ -41,6 +45,10 @@ export default function EditWorkOrder() {
         getClients()
     }, [])
 
+    /**
+     * This function fetches the detail
+     * of specific work order
+     */
     const fetchWorkOrderDetail = async () => {
         try {
             const response = await fetch(`/api/work-orders/${path.split('/')[3]}`)
@@ -74,6 +82,10 @@ export default function EditWorkOrder() {
         }
     }
 
+    /**
+     * This function fetches the clients
+     * to fill the dropdown data
+     */
     const getClients = async () => {
         const response = await fetch('/api/clients')
         const data = await response.json()
@@ -83,6 +95,11 @@ export default function EditWorkOrder() {
         setClients(clientData)
     }
 
+    /**
+     * This function handles the changes in address and
+     * phone number when the client dropdown change
+     * @param event
+     */
     const handleChange = (event: any) => {
         const clientData: any = clients.find((client: any) => client.name == event)
 
@@ -90,8 +107,13 @@ export default function EditWorkOrder() {
         setTel(clientData.telephone)
     }
 
+    /**
+     *
+     * @param event
+     */
     const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault()
+        setIsLoading(true)
 
         const formData = new FormData(event.currentTarget)
 
@@ -108,10 +130,12 @@ export default function EditWorkOrder() {
 
         const data = await response.json()
 
-        console.log(data)
+        if (data.success) {
+            setMessage(data.message)
+            setIsVisible(true)
+            setIsLoading(false)
+        }
     }
-
-
 
     return (
         <>
@@ -119,14 +143,18 @@ export default function EditWorkOrder() {
                 <div className="mx-auto max-w-7xl px-4 py-6 flex justify-between items-center sm:px-6 lg:px-8">
                     <h1 className="text-3xl font-bold tracking-tight text-gray-900">Edit Work Order #{workOrderNumber}</h1>
 
-                    <Link href='/dashboard/work-orders' className='flex items-center bg-indigo-50 text-indigo-700 ring-1 ring-indigo-700/10 ring-inset px-3 py-2 rounded-md'><Image src={leftArrow} alt={'plus'} width={20} height={20} className='mr-2' /> Back to Work Order</Link>
+                    <Link href={`/dashboard/work-orders/${path.split('/')[3]}`} className='flex items-center bg-indigo-50 text-indigo-700 ring-1 ring-indigo-700/10 ring-inset px-3 py-2 rounded-md'><Image src={leftArrow} alt={'plus'} width={20} height={20} className='mr-2' /> Back to Work Order Detail</Link>
                 </div>
 
             </header>
 
 
             <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-                <Form validationBehavior="native" className="bg-white p-5 rounded-lg shadow-lg w-10/12 mr-5" onSubmit={onSubmit}>
+                <div>
+                    <Alert color={'success'} title={message} className={`${isVisible ? 'flex' : 'hidden'} mb-5`} />
+                </div>
+
+                <Form validationBehavior="native" className="bg-white p-5 rounded-lg shadow-lg w-full mr-5" onSubmit={onSubmit}>
                     {/* Work Order */}
                     <div className="w-full">
                         {/* Header */}
@@ -289,7 +317,9 @@ export default function EditWorkOrder() {
                         </div>
                     </div>
 
-                    <button type="submit">Save</button>
+                    <div className="flex justify-end w-full mt-5">
+                        <button type="submit" className="flex flex-row bg-indigo-50 text-indigo-700 ring-1 ring-indigo-700/10 ring-inset px-3 py-2 rounded-md" disabled={isLoading}><Image src={pencil} alt="icon" width={16} height={16} className="mr-2" />{isLoading ? 'Loading...' : 'Save'}</button>
+                    </div>
                 </Form>
             </div>
         </>

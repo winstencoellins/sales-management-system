@@ -25,6 +25,8 @@ export default function CreateWorkOrder() {
     const [clients, setClients] = useState([])
     const [address, setAddress] = useState('')
     const [tel, setTel] = useState('')
+    const [qty, setQty] = useState(0)
+    const [price, setPrice] = useState(0)
 
     useEffect(() => {
         getClients()
@@ -69,10 +71,6 @@ export default function CreateWorkOrder() {
 
         try {
             const formData = new FormData(event.currentTarget)
-
-            for (const pair of formData.entries()) {
-                console.log(pair[0], pair[1])
-            }
 
             const response = await fetch('/api/work-orders', {
                 method: "POST",
@@ -244,14 +242,14 @@ export default function CreateWorkOrder() {
                                         }}/>
                                     </td>
                                     <td className="py-4 px-2">
-                                        <Input type="number" name='quantity' placeholder="1" validate={(value) => {
+                                        <Input type="number" name='quantity' onValueChange={(value: any) => setQty(value)} placeholder="1" validate={(value) => {
                                             if (value.length == 0) {
                                                 return 'Tidak boleh kosong'
                                             }
                                         }}/>
                                     </td>
                                     <td className="py-4 px-2">
-                                        <Input type="number" name="price" placeholder="3500000" validate={(value) => {
+                                        <Input type="number" name="price" onValueChange={(value: any) => setPrice(value)} placeholder="3500000" validate={(value) => {
                                             if (value.length == 0) {
                                                 return 'Tidak boleh kosong'
                                             }
@@ -273,14 +271,14 @@ export default function CreateWorkOrder() {
                                 <tbody>
                                     <tr>
                                         <td className="px-5">Total Harga: </td>
-                                        <td>Rp. 2093900</td>
+                                        <td>Rp. {(qty * price).toLocaleString()}</td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
 
                         <div className="flex justify-end w-full mt-10">
-                            <button type="submit" className="flex items-center bg-indigo-50 text-indigo-700 ring-1 ring-indigo-700/10 ring-inset px-3 py-2 rounded-md"><Image src={plus} alt="icon" width={16} height={16} className="mr-2"/>Create New</button>
+                            <button type="submit" className="flex items-center bg-indigo-50 text-indigo-700 ring-1 ring-indigo-700/10 ring-inset px-3 py-2 rounded-md" disabled={isLoading}><Image src={plus} alt="icon" width={16} height={16} className="mr-2"/>{isLoading ? 'Loading...' : 'Create New'}</button>
                         </div>
 
 

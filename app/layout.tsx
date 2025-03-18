@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Josefin_Sans } from "next/font/google";
+import { Nunito } from "next/font/google";
 import "./globals.css";
 
 // const geistSans = Geist({
@@ -11,8 +11,8 @@ import "./globals.css";
 //   variable: "--font-geist-mono",
 //   subsets: ["latin"],
 // });
-const josefinSans = Josefin_Sans({
-  weight: ['100', '200', '300', '400', '500', '600', '700'],
+const josefinSans = Nunito({
+  weight: ['200', '300', '400', '500', '600', '700'],
   subsets: ['latin'],
   display: 'swap'
 })
